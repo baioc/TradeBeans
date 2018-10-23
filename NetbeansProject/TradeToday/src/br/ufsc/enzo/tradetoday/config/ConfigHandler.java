@@ -40,8 +40,10 @@ public class ConfigHandler {
     }
     
     public static Config getConfig() {
-        if(getFilePath().exists()) {
+        if(!getFilePath().exists()) {
             createConfigFile();
+        }else if(cfg == null){
+            cfg = new Config();
         }
         updateConfigFile();
         return cfg;
