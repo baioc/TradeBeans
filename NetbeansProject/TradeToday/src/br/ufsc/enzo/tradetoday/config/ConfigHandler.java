@@ -6,6 +6,7 @@
 package br.ufsc.enzo.tradetoday.config;
 
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +23,7 @@ public class ConfigHandler {
     private static final String saveFileName = "TradeToday/config.csv";
     private static java.io.File saveFile = getFilePath();
     
-    private static Config cfg = null;
+    private static Config cfg = new Config();
     
     private static String getDefaultDir() {
         if(OSUtils.isWindows()){
@@ -31,7 +32,7 @@ public class ConfigHandler {
         if(OSUtils.isUnix()) {
             return System.getProperty("user.home");
         }
-        return System.getProperty("file.separator");
+        return System.getProperty("user.dir");
     }
     
     private static java.io.File getFilePath() {
@@ -39,18 +40,45 @@ public class ConfigHandler {
         return cfgFile;
     }
     
+    private static java.io.File getFileDirPath() {
+        java.io.File cfgDir = new java.io.File(getDefaultDir(), "TradeToday");
+        return cfgDir;
+    }
+    
     public static Config getConfig() {
         if(!getFilePath().exists()) {
             createConfigFile();
-        }else if(cfg == null){
-            cfg = new Config();
+            System.out.println("1");
         }
+        System.out.println("2");
         updateConfigFile();
         return cfg;
     }
     
     private static void createConfigFile() {
-        
+        try {
+            // Create the dir and file: 
+            System.out.println(getFilePath().exists());
+            getFileDirPath().mkdirs();
+            getFilePath().createNewFile();
+            System.out.println("File created");
+            // Now write on it
+            java.io.Writer writer = Files.newBufferedWriter(
+                    Paths.get(getDefaultDir(),saveFileName));
+            CSVPrinter p = new CSVPrinter(writer, CSVFormat.DEFAULT
+                                .withHeader("refreshRate",
+                                            "rankingAlgorithm",
+                                            "customKey")
+                                );
+            p.printRecord(Config.DEFAULT_REFRESH_RATE,
+                          Config.DEFAULT_RANKING_ALGORITHM,
+                          Config.DEFAULT_CUSTOM_KEY);
+            p.flush();
+            System.out.println("Criado arquivo");
+        } catch(IOException e){
+            System.err.println("Can't create file");
+            System.err.println(e.getMessage());
+        }
     }
     
     private static void updateConfigFile() {
@@ -61,17 +89,40 @@ public class ConfigHandler {
             //Now parse that file to an CSV File
             CSVParser parser = new CSVParser(reader,
                     CSVFormat.DEFAULT
-                            .withHeader("blabla")
+                            .withHeader("refreshRate",
+                                        "rankingAlgorithm",
+                                        "customKey")
                             .withIgnoreHeaderCase()
                             .withTrim());
-            for(CSVRecord records : parser) {
-                cfg.update();
+            for(CSVRecord r : parser) {
+                cfg.update(r.get("refreshRate"),
+                           r.get("rankingAlgorithm"),
+                           r.get("CustomKey"));
             }
         } catch (IOException ex) {
             Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println(ex.getMessage());
         }
         
+    }
+    
+    private static void writeOnConfigFile(String refreshRate,String rankingAlgorithm,String customKey){
+        String a = refreshRate == null? cfg.getRefreshRate() : refreshRate;
+        String b = rankingAlgorithm == null? cfg.getRankingAlgorithm() : rankingAlgorithm;
+        String c = customKey == null? cfg.getCustomKey() : customKey;
+        try {
+            java.io.Writer writer = Files.newBufferedWriter(
+                    Paths.get(getDefaultDir(),saveFileName));
+            CSVPrinter p = new CSVPrinter(writer, CSVFormat.DEFAULT
+                                .withHeader("refreshRate",
+                                            "rankingAlgorithm",
+                                            "customKey")
+                                );
+            p.printRecord(a,b,c);
+        } catch(IOException e){
+            System.err.println(e.getMessage());
+        }
+        updateConfigFile();
     }
     
     
