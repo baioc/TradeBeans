@@ -4,12 +4,15 @@
  * and open the template in the editor.
  */
 package br.ufsc.enzo.tradetoday.config;
+
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.csv.CSVFormat;
 
 /**
  *
@@ -51,9 +54,17 @@ public class ConfigHandler {
     private static void updateConfigFile() {
         try {
             //Locate the file path and creates a reader for it
-            java.io.Reader reader = Files.newBufferedReader(Paths.get(getDefaultDir(),saveFileName));
+            java.io.Reader reader = Files.newBufferedReader(
+                    Paths.get(getDefaultDir(),saveFileName));
             //Now parse that file to an CSV File
-            
+            CSVParser parser = new CSVParser(reader,
+                    CSVFormat.DEFAULT
+                            .withHeader("blabla")
+                            .withIgnoreHeaderCase()
+                            .withTrim());
+            for(CSVRecord records : parser) {
+                cfg.update();
+            }
         } catch (IOException ex) {
             Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println(ex.getMessage());

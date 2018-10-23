@@ -11,4 +11,14 @@ package br.ufsc.enzo.tradetoday.config;
  */
 public class Config {
     
+    // Headers on CSV File | Configurations
+    
+    
+    Config(/*Add configs|headers*/){
+        
+    }
+    
+    void update(/* TODO : ADD HEADERS*/) {
+        
+    }
 }
