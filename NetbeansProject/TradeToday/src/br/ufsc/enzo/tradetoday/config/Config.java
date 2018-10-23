@@ -6,9 +6,15 @@
 package br.ufsc.enzo.tradetoday.config;
 
 /**
- *
- * @author 18100527
- */
+    Configuration Handler for TradeToday
+
+Inteface :
+    @param setRefreshRate(String refreshRate)
+    @param setRankingAlgorithm(String rankingAlgorithm)
+    @param setCustomKey(String customKey)
+    @param getConfig()
+        
+*/
 public class Config {
     // Static default values
     public static final String DEFAULT_REFRESH_RATE = "Daily";

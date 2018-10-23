@@ -16,9 +16,14 @@ import java.util.logging.Logger;
 import org.apache.commons.csv.CSVFormat;
 
 /**
- *
- * @author 18100527
- */
+    Configuration Handler for TradeToday
+Inteface :
+    @param  setRefreshRate(String refreshRate)
+    @param  setRankingAlgorithm(String rankingAlgorithm)
+    @param  setCustomKey(String customKey)
+    @param  getConfig()
+        
+*/
 public class ConfigHandler {
     private static final String saveFileName = "TradeToday/config.csv";
     private static java.io.File saveFile = getFilePath();
@@ -61,7 +66,6 @@ public class ConfigHandler {
             System.out.println(getFilePath().exists());
             getFileDirPath().mkdirs();
             getFilePath().createNewFile();
-            System.out.println("File created");
             // Now write on it
             java.io.Writer writer = Files.newBufferedWriter(
                     Paths.get(getDefaultDir(),saveFileName));
@@ -74,7 +78,6 @@ public class ConfigHandler {
                           Config.DEFAULT_RANKING_ALGORITHM,
                           Config.DEFAULT_CUSTOM_KEY);
             p.flush();
-            System.out.println("Criado arquivo");
         } catch(IOException e){
             System.err.println("Can't create file");
             System.err.println(e.getMessage());
@@ -125,5 +128,16 @@ public class ConfigHandler {
         updateConfigFile();
     }
     
+    public static void setRefreshRate(String refreshRate) {
+        writeOnConfigFile(refreshRate, null, null);
+    }
+    
+    public static void setRankingAlgorithm(String rankingAlgorithm) {
+        writeOnConfigFile(null, rankingAlgorithm, null);
+    }
+    
+    public static void setCustomKey(String customKey) {
+        writeOnConfigFile(null, null, customKey);
+    }
     
 }
