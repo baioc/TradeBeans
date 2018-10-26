@@ -33,6 +33,9 @@ public class TradeToday extends javax.swing.JFrame {
 
         mainPanel = new javax.swing.JPanel();
         menuPanel = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
         leftPanel = new javax.swing.JPanel();
         alertButton = new javax.swing.JToggleButton();
         listStocks = new javax.swing.JScrollPane();
@@ -64,15 +67,42 @@ public class TradeToday extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Opções");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button1MouseEntered(evt);
+            }
+        });
+
+        jButton2.setText("Sair");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button2MouseEntered(evt);
+            }
+        });
+
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
         menuPanel.setLayout(menuPanelLayout);
         menuPanelLayout.setHorizontalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(menuPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(menuPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         mainPanel.add(menuPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 50, 100, -1));
@@ -82,7 +112,7 @@ public class TradeToday extends javax.swing.JFrame {
 
         alertButton.setBackground(new java.awt.Color(204, 0, 0));
         alertButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/AlertButtonUnlight.png"))); // NOI18N
-        alertButton.setBorder(javax.swing.BorderFactory.createBevelBorder(0));
+        alertButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         alertButton.setBorderPainted(false);
         alertButton.setFocusPainted(false);
         alertButton.setMaximumSize(new java.awt.Dimension(150, 90));
@@ -190,9 +220,7 @@ public class TradeToday extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuPanelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuPanelMouseEntered
-        menuPanel.setVisible(true);
-        menuPanel.setEnabled(true);
-        
+        openMenu(evt);    
     }//GEN-LAST:event_menuPanelMouseEntered
 
     private void menuPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuPanelMouseExited
@@ -204,21 +232,16 @@ public class TradeToday extends javax.swing.JFrame {
     }//GEN-LAST:event_menuPanelMouseExited
 
     private void menuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuButtonActionPerformed
-        menuPanel.setVisible(true);
-        menuPanel.setEnabled(true);
-        menuOpened = true;
+        openMenu(null);
     }//GEN-LAST:event_menuButtonActionPerformed
 
     private void menuButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuButtonMouseExited
-        menuPanel.setVisible(false);
-        menuPanel.setEnabled(false);
-        menuOpened = false;
+        closeMenu(evt);
     }//GEN-LAST:event_menuButtonMouseExited
 
     private void menuButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuButtonMouseEntered
         if(menuOpened){
-            menuPanel.setVisible(true);
-            menuPanel.setEnabled(true);   
+            openMenu(evt);
         }
     }//GEN-LAST:event_menuButtonMouseEntered
 
@@ -226,6 +249,27 @@ public class TradeToday extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_typeMenuActionPerformed
 
+    private void button1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button1MouseEntered
+        // TODO add your handling code here:
+        openMenu(evt);
+    }//GEN-LAST:event_button1MouseEntered
+
+    private void button2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button2MouseEntered
+        // TODO add your handling code here:
+        openMenu(evt);
+    }//GEN-LAST:event_button2MouseEntered
+
+    private void openMenu(java.awt.event.MouseEvent evt) {
+        menuPanel.setVisible(true);
+        menuPanel.setEnabled(true);
+        menuOpened = true;
+    }
+    
+    private void closeMenu(java.awt.event.MouseEvent evt) {
+        menuPanel.setVisible(true);
+        menuPanel.setEnabled(true);
+        menuOpened = true;
+    }
     /**
      * @param args the command line arguments
      */
@@ -264,7 +308,10 @@ public class TradeToday extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton alertButton;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JList<String> jList1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JScrollPane listStocks;
     private javax.swing.JPanel mainPanel;
