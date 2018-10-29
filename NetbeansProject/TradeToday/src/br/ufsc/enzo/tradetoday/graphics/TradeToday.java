@@ -5,6 +5,8 @@
  */
 package br.ufsc.enzo.tradetoday.graphics;
 
+import br.ufsc.enzo.tradetoday.config.ConfigHandler;
+
 /**
  *
  * @author Enzo Coelho Albornoz
@@ -73,6 +75,11 @@ public class TradeToday extends javax.swing.JFrame {
                 button1MouseEntered(evt);
             }
         });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openConfigMenu(evt);
+            }
+        });
 
         jButton2.setText("Sair");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -112,7 +119,7 @@ public class TradeToday extends javax.swing.JFrame {
 
         alertButton.setBackground(new java.awt.Color(204, 0, 0));
         alertButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/AlertButtonUnlight.png"))); // NOI18N
-        alertButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        alertButton.setBorder(javax.swing.BorderFactory.createBevelBorder(0));
         alertButton.setBorderPainted(false);
         alertButton.setFocusPainted(false);
         alertButton.setMaximumSize(new java.awt.Dimension(150, 90));
@@ -259,6 +266,18 @@ public class TradeToday extends javax.swing.JFrame {
         openMenu(evt);
     }//GEN-LAST:event_button2MouseEntered
 
+    private void openConfigMenu(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openConfigMenu
+        // TODO add your handling code here:
+        if(cfgMenu == null){
+            cfgMenu = new ConfigMenu();
+            cfgMenu.setVisible(true);
+        }
+        if(!cfgMenu.isOpened()){
+            cfgMenu = new ConfigMenu();
+            cfgMenu.setVisible(true);
+        }
+    }//GEN-LAST:event_openConfigMenu
+    
     private void openMenu(java.awt.event.MouseEvent evt) {
         menuPanel.setVisible(true);
         menuPanel.setEnabled(true);
@@ -302,12 +321,14 @@ public class TradeToday extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new TradeToday().setVisible(true);
+                ConfigHandler.getConfig();
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton alertButton;
+    private boolean cfgMenuOpened = false;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JList<String> jList1;
@@ -328,6 +349,7 @@ public class TradeToday extends javax.swing.JFrame {
 
     //Custom Manual Variables
     //private String menuType = ConfigHandler.getConfig().getMenuType();
+    private ConfigMenu cfgMenu = null;
     
     //Custom Manual Methods
     //private void changeType()

@@ -20,6 +20,11 @@ public class Config {
     public static final String DEFAULT_REFRESH_RATE = "Daily";
     public static final String DEFAULT_RANKING_ALGORITHM = "MovingAverage";
     public static final String DEFAULT_CUSTOM_KEY = "";
+    public static final String REFRESH_DAILY = "Daily";
+    public static final String REFRESH_WEEKLY = "Weekly";
+    public static final String REFRESH_MONTHLY = "Mothly";
+    public static final String RANKING_AVERAGE = "MovingAverage";
+    public static final String RANKING_BOLLINGER = "BollingerBand";
     
     // Headers on CSV File | Configurations
     private String refreshRate;
@@ -54,4 +59,15 @@ public class Config {
     public String getCustomKey() {
         return customKey;
     }
+    
+    public static String[] getRefreshTimes(){
+       String[] r = {REFRESH_DAILY,REFRESH_MONTHLY,REFRESH_WEEKLY};
+       return r;
+    }
+    
+    public static String[] getRankingAlgorithms(){
+        String[] r = {RANKING_AVERAGE,RANKING_BOLLINGER};
+        return r;
+    }
+     
 }
