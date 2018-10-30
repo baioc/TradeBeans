@@ -6,6 +6,7 @@
 package br.ufsc.enzo.tradetoday.graphics;
 
 import br.ufsc.enzo.tradetoday.config.ConfigHandler;
+import br.ufsc.enzo.tradetoday.config.ListHandler;
 
 /**
  *
@@ -131,11 +132,7 @@ public class TradeToday extends javax.swing.JFrame {
 
         listStocks.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
+        jList1.setModel(new javax.swing.DefaultComboBoxModel<>(ListHandler.getSymbols()));
         listStocks.setViewportView(jList1);
 
         typeMenu.setText("type");
@@ -155,7 +152,7 @@ public class TradeToday extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(typeMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(listStocks))
+                    .addComponent(listStocks, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
         leftPanelLayout.setVerticalGroup(

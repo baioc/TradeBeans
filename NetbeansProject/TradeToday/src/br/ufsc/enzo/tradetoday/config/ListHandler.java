@@ -6,6 +6,7 @@
 package br.ufsc.enzo.tradetoday.config;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -15,10 +16,13 @@ import org.apache.commons.csv.CSVRecord;
  * @author Enzo Coelho Albornoz
  */
 public class ListHandler {
+    public static String DEFAULT_TYPE = "Cripto";
+    public static String TYPE_CRIPTO = "Cripto";
+    public static String TYPE_STOCK = "Stock";
+    private static String[][] list = null;
+    private static String selectedType = DEFAULT_TYPE;
     
-    private static String[][] list;
-    
-    public void updateList() {
+    public static void updateList() {
         try {
             java.io.Reader reader = null;
             CSVParser p = new CSVParser(reader,
@@ -38,12 +42,49 @@ public class ListHandler {
                 list[i][3] = r.get("desc");
             }
             for(int i = 0;i < list.length;i++){
-                System.out.printf("Symbol: %s | Type : %s | Name : %s | Desc: %s");
+                System.out.printf("Symbol: %s | Type : %s | Name : %s | "
+                        + "Desc: %s \n",list[i][0],list[i][1],
+                        list[i][2],list[i][3]);
             }
         } catch(IOException e){
             System.err.println(e.getMessage());
         }
     }
     
+    private static String[] getSymbolsCripto(){
+        if(list == null){
+            updateList();
+        }
+        ArrayList<String> symbols = new ArrayList<String>();
+        for(int i = 0;i < list.length;i++){
+            if(list[i][1].equals(TYPE_CRIPTO)){
+                symbols.add(list[i][0]);
+            }
+        }
+        return symbols.toArray(list[0]);
+    }
     
+    public static String[] getSymbols(){
+        if(selectedType.equals(TYPE_CRIPTO)){
+            return getSymbolsCripto();
+        }
+        return getSymbolsStock();
+    }
+    
+    private static String[] getSymbolsStock(){
+        if(list == null){
+            updateList();
+        }
+        ArrayList<String> symbols = new ArrayList<String>();
+        for(int i = 0;i < list.length;i++){
+            if(list[i][1].equals(TYPE_STOCK)){
+                symbols.add(list[i][0]);
+            }
+        }
+        return symbols.toArray(list[0]);
+    }
+    
+    public static void main(String [] args){
+        
+    }
 }

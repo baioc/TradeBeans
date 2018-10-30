@@ -156,7 +156,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="typeMenu" max="32767" attributes="0"/>
-                          <Component id="listStocks" max="32767" attributes="0"/>
+                          <Component id="listStocks" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -223,39 +223,8 @@
               <SubComponents>
                 <Component class="javax.swing.JList" name="jList1">
                   <Properties>
-                    <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-                      <StringArray count="30">
-                        <StringItem index="0" value="Item 1"/>
-                        <StringItem index="1" value="Item 2"/>
-                        <StringItem index="2" value="Item 3"/>
-                        <StringItem index="3" value="Item 4"/>
-                        <StringItem index="4" value="Item 5"/>
-                        <StringItem index="5" value="Item 6"/>
-                        <StringItem index="6" value="Item 1"/>
-                        <StringItem index="7" value="Item 2"/>
-                        <StringItem index="8" value="Item 3"/>
-                        <StringItem index="9" value="Item 4"/>
-                        <StringItem index="10" value="Item 5"/>
-                        <StringItem index="11" value="Item 6"/>
-                        <StringItem index="12" value="Item 1"/>
-                        <StringItem index="13" value="Item 2"/>
-                        <StringItem index="14" value="Item 3"/>
-                        <StringItem index="15" value="Item 4"/>
-                        <StringItem index="16" value="Item 5"/>
-                        <StringItem index="17" value="Item 6"/>
-                        <StringItem index="18" value="Item 1"/>
-                        <StringItem index="19" value="Item 2"/>
-                        <StringItem index="20" value="Item 3"/>
-                        <StringItem index="21" value="Item 4"/>
-                        <StringItem index="22" value="Item 5"/>
-                        <StringItem index="23" value="Item 6"/>
-                        <StringItem index="24" value="Item 1"/>
-                        <StringItem index="25" value="Item 2"/>
-                        <StringItem index="26" value="Item 3"/>
-                        <StringItem index="27" value="Item 4"/>
-                        <StringItem index="28" value="Item 5"/>
-                        <StringItem index="29" value="Item 6"/>
-                      </StringArray>
+                    <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="new javax.swing.DefaultComboBoxModel&lt;&gt;(ListHandler.getSymbols())" type="code"/>
                     </Property>
                   </Properties>
                   <AuxValues>
