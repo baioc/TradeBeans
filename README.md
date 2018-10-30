@@ -1,8 +1,6 @@
 POO2_Project
 ====
 
-### My Object Oriented Programming 2 Project in UFSC Computer Science
-
 ## Sistema de Simulação de Compra e Venda de Ativos Financeiros Automatizada
 
 Desenvolver, **em duplas** um sistema de alerta de compra e venda de ativos financeiros baseados em análise gráfica (**Média móvel**, **banda de bollinger**, etc) que deverá analisar diversos ativos (**ações** de empresas ou **criptomoedas**).

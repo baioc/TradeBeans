@@ -1,0 +1,31 @@
+@startuml
+
+
+abstract class API {
+	- String base
+	# API(String location)
+	+ String getLocation()
+	+ BufferedReader get(String... parameters)
+}
+
+
+class AlphaVantageAPI {
+	- String key
+	+ AlphaVantageAPI(String key)
+	+ BufferedReader getStock(String symbol, String timeUnit)
+	+ BufferedReader getCrypto(String symbol, String timeUnit)
+	+ BufferedReader getIndicator(String symbol, String timeUnit, String indicator, int period)
+}
+
+API <|-- AlphaVantageAPI
+
+
+class PublicGoogleDriveAPI {
+	+ PublicGoogleDriveAPI()
+	+ BufferedReader get(String publicFileID)
+}
+
+API <|-- PublicGoogleDriveAPI
+
+
+@enduml
