@@ -276,6 +276,8 @@ public class TradeToday extends javax.swing.JFrame {
             cfgMenu = new ConfigMenu();
             cfgMenu.setVisible(true);
         }
+        
+        closeMenu(null);
     }//GEN-LAST:event_openConfigMenu
     
     private void openMenu(java.awt.event.MouseEvent evt) {
@@ -285,9 +287,9 @@ public class TradeToday extends javax.swing.JFrame {
     }
     
     private void closeMenu(java.awt.event.MouseEvent evt) {
-        menuPanel.setVisible(true);
-        menuPanel.setEnabled(true);
-        menuOpened = true;
+        menuPanel.setVisible(false);
+        menuPanel.setEnabled(false);
+        menuOpened = false;
     }
     /**
      * @param args the command line arguments

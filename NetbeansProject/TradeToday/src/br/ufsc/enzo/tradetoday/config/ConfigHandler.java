@@ -110,9 +110,6 @@ public class ConfigHandler {
     }
     
     private static void writeOnConfigFile(String refreshRate,String rankingAlgorithm,String customKey){
-        String a = refreshRate == null? cfg.getRefreshRate() : refreshRate;
-        String b = rankingAlgorithm == null? cfg.getRankingAlgorithm() : rankingAlgorithm;
-        String c = customKey == null? cfg.getCustomKey() : customKey;
         try {
             java.io.Writer writer = Files.newBufferedWriter(
                     Paths.get(getDefaultDir(),saveFileName));
@@ -121,7 +118,8 @@ public class ConfigHandler {
                                             "rankingAlgorithm",
                                             "customKey")
                                 );
-            p.printRecord(a,b,c);
+            p.printRecord(refreshRate,rankingAlgorithm,customKey);
+            p.flush();
         } catch(IOException e){
             System.err.println(e.getMessage());
         }
@@ -129,15 +127,15 @@ public class ConfigHandler {
     }
     
     public static void setRefreshRate(String refreshRate) {
-        writeOnConfigFile(refreshRate, null, null);
+        writeOnConfigFile(refreshRate, cfg.getRankingAlgorithm(), cfg.getCustomKey());
     }
     
     public static void setRankingAlgorithm(String rankingAlgorithm) {
-        writeOnConfigFile(null, rankingAlgorithm, null);
+        writeOnConfigFile(cfg.getRefreshRate(), rankingAlgorithm, cfg.getCustomKey());
     }
     
     public static void setCustomKey(String customKey) {
-        writeOnConfigFile(null, null, customKey);
+        writeOnConfigFile(cfg.getRefreshRate(), cfg.getRankingAlgorithm(), customKey);
     }
     
 }

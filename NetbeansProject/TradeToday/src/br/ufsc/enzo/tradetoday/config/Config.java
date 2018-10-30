@@ -22,7 +22,7 @@ public class Config {
     public static final String DEFAULT_CUSTOM_KEY = "";
     public static final String REFRESH_DAILY = "Daily";
     public static final String REFRESH_WEEKLY = "Weekly";
-    public static final String REFRESH_MONTHLY = "Mothly";
+    public static final String REFRESH_MONTHLY = "Monthly";
     public static final String RANKING_AVERAGE = "MovingAverage";
     public static final String RANKING_BOLLINGER = "BollingerBand";
     

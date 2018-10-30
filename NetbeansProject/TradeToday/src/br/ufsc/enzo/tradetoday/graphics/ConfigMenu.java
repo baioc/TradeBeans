@@ -39,7 +39,7 @@ public class ConfigMenu extends javax.swing.JFrame {
         refreshRate = new javax.swing.JLabel();
         rankingAlgorithm = new javax.swing.JLabel();
         customKey = new javax.swing.JLabel();
-        rrComBox = new javax.swing.JComboBox<>();
+        rrComBox = new javax.swing.JComboBox(Config.getRefreshTimes());
         raComBox = new javax.swing.JComboBox<>();
         ckTextField = new javax.swing.JFormattedTextField();
         applyBtn = new javax.swing.JButton();
@@ -75,9 +75,11 @@ public class ConfigMenu extends javax.swing.JFrame {
         customKey.setText("Custom Key");
         customKey.setOpaque(true);
 
-        rrComBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        rrComBox.setModel(new javax.swing.DefaultComboBoxModel<>(Config.getRefreshTimes()));
+        rrComBox.setSelectedIndex(rrComBox.getSelectedIndex());
 
-        raComBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        raComBox.setModel(new javax.swing.DefaultComboBoxModel<>(Config.getRankingAlgorithms()));
+        raComBox.setSelectedIndex(raComBox.getSelectedIndex());
 
         ckTextField.setColumns(16);
         ckTextField.setDocument(new JTextFieldLimit(16));
@@ -160,9 +162,11 @@ public class ConfigMenu extends javax.swing.JFrame {
         String rr = Config.getRefreshTimes()[rrComBox.getSelectedIndex()];
         String ra = Config.getRankingAlgorithms()[raComBox.getSelectedIndex()];
         String ck = ckTextField.getText();
-        if(ck.length() < 16){
+        if(ck.length() < 16 && ck.length() != 0){
+            setAlwaysOnTop(false);
             JOptionPane.showMessageDialog(null, "Invalid Custom Key!", "Error",
                 JOptionPane.ERROR_MESSAGE);
+            setAlwaysOnTop(true);
             return;
         }
         ConfigHandler.setCustomKey(ck);
@@ -230,4 +234,5 @@ public class ConfigMenu extends javax.swing.JFrame {
     boolean isOpened(){
         return opened;
     }
+    
 }
