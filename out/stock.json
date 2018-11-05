@@ -2,16 +2,23 @@
 	"Meta Data": {
 		"1. Information": "Monthly Prices (open, high, low, close) and Volumes",
 		"2. Symbol": "MSFT",
-		"3. Last Refreshed": "2018-10-30 16:00:02",
+		"3. Last Refreshed": "2018-11-05 14:35:06",
 		"4. Time Zone": "US/Eastern"
 	},
 	"Monthly Time Series": {
-		"2018-10-30": {
+		"2018-11-05": {
+			"1. open": "107.0500",
+			"2. high": "107.5900",
+			"3. low": "104.9750",
+			"4. close": "107.4900",
+			"5. volume": "90328730"
+		},
+		"2018-10-31": {
 			"1. open": "114.7500",
 			"2. high": "116.1800",
 			"3. low": "100.1100",
-			"4. close": "103.7300",
-			"5. volume": "871023045"
+			"4. close": "106.8100",
+			"5. volume": "927547942"
 		},
 		"2018-09-28": {
 			"1. open": "110.8500",

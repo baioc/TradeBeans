@@ -5,23 +5,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 
-public class AlphaVantageTest {
+public class GoogleDocsTest {
 
 	public static void main(String[] args) {
 		StringBuilder responseBuilder = new StringBuilder();
 
 		try {
-			AlphaVantageAPI api = new AlphaVantageAPI(null);
-			// BufferedReader file = api.getStock("MSFT", AlphaVantageAPI.TIME_MONTHLY);
-			// BufferedReader file = api.getCrypto("BTC", AlphaVantageAPI.TIME_WEEKLY);
-			BufferedReader file = api.getIndicator(
-				"AAPL", AlphaVantageAPI.TIME_DAILY,
-				AlphaVantageAPI.INDICATOR_AVERAGE_SIMPLE, AlphaVantageAPI.TYPE_CLOSE, 30
+			API api = new GoogleDocsAPI();
+			BufferedReader file = api.get(
+				"spreadsheets/d/e/",
+				"2PACX-1vTthBZd6gPf6Ak8R0cXzxvoB-_9SkMcEyNqmaCjPNTCXLnc-rIz_e1VF55iGS7SB1ECQUjmYDg2Mk8F",
+				"/pub",
+				"?output=csv"
 			);
 
 			String line;
 			while ((line = file.readLine()) != null) {
-				responseBuilder.append(line);
+				responseBuilder.append(line + "\n");
 			}
 
 			file.close();

@@ -14,18 +14,17 @@ class AlphaVantageAPI {
 	+ AlphaVantageAPI(String key)
 	+ BufferedReader getStock(String symbol, String timeUnit)
 	+ BufferedReader getCrypto(String symbol, String timeUnit)
-	+ BufferedReader getIndicator(String symbol, String timeUnit, String indicator, int period)
+	+ BufferedReader getIndicator(String symbol, String timeUnit, String indicator, String type, int period)
 }
 
 API <|-- AlphaVantageAPI
 
 
-class PublicGoogleDriveAPI {
-	+ PublicGoogleDriveAPI()
-	+ BufferedReader get(String publicFileID)
+class GoogleDocsAPI {
+	+ GoogleDocsAPI()
 }
 
-API <|-- PublicGoogleDriveAPI
+API <|-- GoogleDocsAPI
 
 
 @enduml
