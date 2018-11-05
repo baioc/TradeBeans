@@ -21,11 +21,11 @@ import org.apache.commons.csv.CSVRecord;
  * @author Enzo Coelho Albornoz
  */
 public class ListHandler {
-    public static String DEFAULT_TYPE = "Cripto";
-    public static String TYPE_CRIPTO = "Cripto";
-    public static String TYPE_STOCK = "Stock";
+    public final static String TYPE_CRYPTO = "CRYPTO";
+    public final static String TYPE_DEFAULT = TYPE_CRYPTO;
+    public final static String TYPE_STOCK = "STOCK";
     private static String[][] list = null;
-    private static String selectedType = DEFAULT_TYPE;
+    private static String selectedType = TYPE_DEFAULT;
     
     private static java.io.BufferedReader a;
     
@@ -71,16 +71,21 @@ public class ListHandler {
             updateList();
         }
         ArrayList<String> symbols = new ArrayList<String>();
-        for(int i = 0;i < list.length;i++){
-            if(list[i][1].equals(TYPE_CRIPTO)){
+        for(int i = 1;i < list.length;i++){
+            System.out.println(list[i][0] + " | " + list[i][1]);
+            if(list[i][1].equals(TYPE_CRYPTO)){
                 symbols.add(list[i][0]);
             }
         }
-        return symbols.toArray(list[0]);
+        String[] r = new String[symbols.size()];
+        for(int i = 0;i < r.length;i++){
+            r[i] = symbols.get(i);
+        }
+        return r;       
     }
     
     public static String[] getSymbols(){
-        if(selectedType.equals(TYPE_CRIPTO)){
+        if(selectedType.equals(TYPE_CRYPTO)){
             return getSymbolsCripto();
         }
         return getSymbolsStock();
@@ -91,7 +96,7 @@ public class ListHandler {
             updateList();
         }
         ArrayList<String> symbols = new ArrayList<String>();
-        for(int i = 0;i < list.length;i++){
+        for(int i = 1;i < list.length;i++){
             if(list[i][1].equals(TYPE_STOCK)){
                 symbols.add(list[i][0]);
                 
@@ -104,16 +109,30 @@ public class ListHandler {
         return r;
     }
     
+    public static void changeSelectedType(){
+        if(selectedType.equals(TYPE_CRYPTO)){
+            selectedType = TYPE_STOCK;
+        }else{
+            selectedType = TYPE_CRYPTO;
+        }
+    }
+    
+    public static String getSelectedType(){
+        return selectedType;
+    }
+    
     public static void main(String [] args) throws FileNotFoundException{
         String[] c = getSymbolsCripto();
         String[] s = getSymbolsStock();
         for(String l : c){
             System.out.println(l);
-            System.out.println("a");
+            System.out.println("-----------");
             
         }
+        System.out.println("  NEW  ");
         for(String l : s){
             System.out.println(l);
+            System.out.println("===========");
         }
     }
 }

@@ -7,6 +7,7 @@ package br.ufsc.enzo.tradetoday.graphics;
 
 import br.ufsc.enzo.tradetoday.config.ConfigHandler;
 import br.ufsc.enzo.tradetoday.config.ListHandler;
+import java.awt.event.ItemEvent;
 
 /**
  *
@@ -46,6 +47,8 @@ public class TradeToday extends javax.swing.JFrame {
         typeMenu = new javax.swing.JButton();
         topPanel = new javax.swing.JPanel();
         menuButton = new javax.swing.JButton();
+        analyzePanel1 = new br.ufsc.enzo.tradetoday.graphics.AnalyzePanel();
+        stockInfoPanel1 = new br.ufsc.enzo.tradetoday.graphics.StockInfoPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Trade Today");
@@ -129,13 +132,24 @@ public class TradeToday extends javax.swing.JFrame {
         alertButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/AlertButtonLight.png"))); // NOI18N
         alertButton.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/AlertButtonBackLight.png"))); // NOI18N
         alertButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/AlertButtonBackUnlight.png"))); // NOI18N
+        alertButton.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                alertButtonStateChanged(evt);
+            }
+        });
 
         listStocks.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         jList1.setModel(new javax.swing.DefaultComboBoxModel<>(ListHandler.getSymbols()));
+        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList1ValueChanged(evt);
+            }
+        });
         listStocks.setViewportView(jList1);
 
-        typeMenu.setText("type");
+        typeMenu.setText(ListHandler.TYPE_DEFAULT);
         typeMenu.setBorderPainted(false);
         typeMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -203,10 +217,42 @@ public class TradeToday extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(menuButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10))
+                .addGap(558, 558, 558))
         );
 
         mainPanel.add(topPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 0, 750, -1));
+
+        analyzePanel1.setBackground(new java.awt.Color(242, 42, 42));
+        analyzePanel1.setEnabled(false);
+
+        javax.swing.GroupLayout analyzePanel1Layout = new javax.swing.GroupLayout(analyzePanel1);
+        analyzePanel1.setLayout(analyzePanel1Layout);
+        analyzePanel1Layout.setHorizontalGroup(
+            analyzePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 750, Short.MAX_VALUE)
+        );
+        analyzePanel1Layout.setVerticalGroup(
+            analyzePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 540, Short.MAX_VALUE)
+        );
+
+        mainPanel.add(analyzePanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, -1, -1));
+
+        stockInfoPanel1.setBackground(new java.awt.Color(42, 42, 242));
+        stockInfoPanel1.setEnabled(false);
+
+        javax.swing.GroupLayout stockInfoPanel1Layout = new javax.swing.GroupLayout(stockInfoPanel1);
+        stockInfoPanel1.setLayout(stockInfoPanel1Layout);
+        stockInfoPanel1Layout.setHorizontalGroup(
+            stockInfoPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 750, Short.MAX_VALUE)
+        );
+        stockInfoPanel1Layout.setVerticalGroup(
+            stockInfoPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 540, Short.MAX_VALUE)
+        );
+
+        mainPanel.add(stockInfoPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -251,8 +297,15 @@ public class TradeToday extends javax.swing.JFrame {
 
     private void typeMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeMenuActionPerformed
         // TODO add your handling code here:
+        ListHandler.changeSelectedType();
+        typeMenu.setText(ListHandler.getSelectedType());
+        updateSymbolsList();
     }//GEN-LAST:event_typeMenuActionPerformed
 
+    private void updateSymbolsList(){
+        jList1.setModel(new javax.swing.DefaultComboBoxModel<>(ListHandler.getSymbols()));
+    }
+    
     private void button1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button1MouseEntered
         // TODO add your handling code here:
         openMenu(evt);
@@ -276,6 +329,26 @@ public class TradeToday extends javax.swing.JFrame {
         
         closeMenu(null);
     }//GEN-LAST:event_openConfigMenu
+
+    private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
+        // TODO add your handling code here:
+        // :: TODO :: CALLS GRAPHICAL MENU UPDATE
+        alertButton.setSelected(false);
+        
+    }//GEN-LAST:event_jList1ValueChanged
+
+    private void alertButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_alertButtonStateChanged
+        // TODO add your handling code here:
+        // TODO OPEN ANALIZE PANEL
+        if(alertButton.isSelected()){
+            analyzePanel1.setVisible(true);
+            analyzePanel1.setEnabled(true);
+            //analyzePanel1.startAnalysis();
+        }else{
+            analyzePanel1.setVisible(false);
+            analyzePanel1.setEnabled(false);
+        }
+    }//GEN-LAST:event_alertButtonStateChanged
     
     private void openMenu(java.awt.event.MouseEvent evt) {
         menuPanel.setVisible(true);
@@ -288,6 +361,8 @@ public class TradeToday extends javax.swing.JFrame {
         menuPanel.setEnabled(false);
         menuOpened = false;
     }
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -327,6 +402,7 @@ public class TradeToday extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton alertButton;
+    private br.ufsc.enzo.tradetoday.graphics.AnalyzePanel analyzePanel1;
     private boolean cfgMenuOpened = false;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -342,6 +418,7 @@ public class TradeToday extends javax.swing.JFrame {
     private boolean inMenuPnl = false;
     /*==================================*/
     private javax.swing.JPanel menuPanel;
+    private br.ufsc.enzo.tradetoday.graphics.StockInfoPanel stockInfoPanel1;
     private javax.swing.JPanel topPanel;
     private javax.swing.JButton typeMenu;
     // End of variables declaration//GEN-END:variables
