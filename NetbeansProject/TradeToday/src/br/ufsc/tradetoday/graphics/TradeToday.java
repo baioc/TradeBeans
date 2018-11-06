@@ -325,6 +325,7 @@ public class TradeToday extends javax.swing.JFrame {
         // TODO add your handling code here:
         // :: TODO :: CALLS GRAPHICAL MENU UPDATE
         alertButton.setSelected(false);
+        stockInfoPanel1 = new StockInfoPanel();
         
     }//GEN-LAST:event_jList1ValueChanged
 

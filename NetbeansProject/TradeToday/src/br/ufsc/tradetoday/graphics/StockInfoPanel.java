@@ -22,7 +22,6 @@ public class StockInfoPanel extends javax.swing.JPanel {
         defineTableData(data,header);
         generateLabels();
         initComponents();
-        
     }
 
     /**
@@ -40,7 +39,9 @@ public class StockInfoPanel extends javax.swing.JPanel {
         lUpdtPanel = new javax.swing.JPanel();
         lstUpdtHead = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jLabel2 = new javax.swing.JLabel();
+        lUpdtScrll = new javax.swing.JScrollPane();
+        lUpdtText = new javax.swing.JTextArea();
+        lstUpdtHead1 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(42, 42, 42));
         setMaximumSize(new java.awt.Dimension(750, 540));
@@ -86,9 +87,21 @@ public class StockInfoPanel extends javax.swing.JPanel {
             lstUpdtHead.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             lstUpdtHead.setText("Last Update :");
 
-            jLabel2.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-            jLabel2.setForeground(new java.awt.Color(250, 250, 250));
-            jLabel2.setText("jLabel2");
+            lUpdtScrll.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+            lUpdtScrll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            lUpdtScrll.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+            lUpdtScrll.setOpaque(false);
+
+            lUpdtText.setEditable(false);
+            lUpdtText.setBackground(new java.awt.Color(70, 70, 70));
+            lUpdtText.setColumns(20);
+            lUpdtText.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+            lUpdtText.setForeground(new java.awt.Color(250, 250, 250));
+            lUpdtText.setRows(5);
+            lUpdtText.setTabSize(4);
+            lUpdtText.setText(generateLabels());
+            lUpdtText.setHighlighter(null);
+            lUpdtScrll.setViewportView(lUpdtText);
 
             javax.swing.GroupLayout lUpdtPanelLayout = new javax.swing.GroupLayout(lUpdtPanel);
             lUpdtPanel.setLayout(lUpdtPanelLayout);
@@ -96,25 +109,28 @@ public class StockInfoPanel extends javax.swing.JPanel {
                 lUpdtPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(lUpdtPanelLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(lUpdtPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lstUpdtHead, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+                    .addGroup(lUpdtPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(lstUpdtHead, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
                         .addComponent(jSeparator1)
-                        .addGroup(lUpdtPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addGap(0, 0, Short.MAX_VALUE)))
-                    .addContainerGap())
+                        .addComponent(lUpdtScrll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
             lUpdtPanelLayout.setVerticalGroup(
                 lUpdtPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(lUpdtPanelLayout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(lstUpdtHead, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(4, 4, 4)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jLabel2)
-                    .addContainerGap(172, Short.MAX_VALUE))
+                    .addComponent(lUpdtScrll, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap())
             );
+
+            lstUpdtHead1.setFont(new java.awt.Font("Ubuntu", 1, 28)); // NOI18N
+            lstUpdtHead1.setForeground(new java.awt.Color(250, 250, 250));
+            lstUpdtHead1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            lstUpdtHead1.setText("Others Updates");
 
             javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
             this.setLayout(layout);
@@ -122,11 +138,15 @@ public class StockInfoPanel extends javax.swing.JPanel {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(graphicsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lUpdtPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lstUpdtHead1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(0, 0, Short.MAX_VALUE)
+                                    .addComponent(lUpdtPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addComponent(infoScroll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
@@ -134,9 +154,12 @@ public class StockInfoPanel extends javax.swing.JPanel {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(graphicsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lUpdtPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(lUpdtPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lstUpdtHead1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                     .addComponent(infoScroll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap())
@@ -148,10 +171,12 @@ public class StockInfoPanel extends javax.swing.JPanel {
     private javax.swing.JPanel graphicsPanel;
     private javax.swing.JScrollPane infoScroll;
     private javax.swing.JTable infoTable;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JPanel lUpdtPanel;
+    private javax.swing.JScrollPane lUpdtScrll;
+    private javax.swing.JTextArea lUpdtText;
     private javax.swing.JLabel lstUpdtHead;
+    private javax.swing.JLabel lstUpdtHead1;
     // End of variables declaration//GEN-END:variables
     
     // Custom Variables
@@ -160,7 +185,8 @@ public class StockInfoPanel extends javax.swing.JPanel {
                                     {"22/07/2000","0.27","0.25","-0.01"}};
     private String[] tableHeader =  {"Date","Open","Close","Delta"};
     private String[]  lastUpdate = {"25/07/2000","0.27","0.29","+0.01"}; 
-    private javax.swing.JLabel[] labels;
+    private String labels = "";
+    
     private void defineTableData(String[][] data,String[] header){
         lastUpdate = data[0];
         tableHeader = header;
@@ -169,11 +195,12 @@ public class StockInfoPanel extends javax.swing.JPanel {
         }
     }
     
-    private void generateLabels(){
-        labels = new javax.swing.JLabel[tableHeader.length];
-        for(int i = 0;i < labels.length;i++){
-            
+    private String generateLabels(){
+        String r = "";
+        for(int i = 0;i < tableHeader.length;i++){
+            r += tableHeader[i] + " : " + tableData[0][i] + "\n";
         }
+        return r;
     }
     
     public static void main(String[] args) {
