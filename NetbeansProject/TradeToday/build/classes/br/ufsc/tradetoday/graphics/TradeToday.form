@@ -182,7 +182,7 @@
                   <Color blue="0" green="0" red="cc" type="rgb"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/br/ufsc/enzo/tradetoday/res/AlertButtonUnlight.png"/>
+                  <Image iconType="3" name="/br/ufsc/tradetoday/res/AlertButtonUnlight.png"/>
                 </Property>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
@@ -190,6 +190,9 @@
                   </Border>
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
+                <Property name="disabledIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="0" name="null"/>
+                </Property>
                 <Property name="focusPainted" type="boolean" value="false"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[150, 90]"/>
@@ -201,13 +204,13 @@
                   <Dimension value="[150, 90]"/>
                 </Property>
                 <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/br/ufsc/enzo/tradetoday/res/AlertButtonLight.png"/>
+                  <Image iconType="3" name="/br/ufsc/tradetoday/res/AlertButtonLight.png"/>
                 </Property>
                 <Property name="rolloverSelectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/br/ufsc/enzo/tradetoday/res/AlertButtonBackLight.png"/>
+                  <Image iconType="3" name="/br/ufsc/tradetoday/res/AlertButtonBackLight.png"/>
                 </Property>
                 <Property name="selectedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/br/ufsc/enzo/tradetoday/res/AlertButtonBackUnlight.png"/>
+                  <Image iconType="3" name="/br/ufsc/tradetoday/res/AlertButtonBackUnlight.png"/>
                 </Property>
               </Properties>
               <Events>
@@ -292,12 +295,12 @@
             <Component class="javax.swing.JButton" name="menuButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/br/ufsc/enzo/tradetoday/res/MenuButtonUnlight.png"/>
+                  <Image iconType="3" name="/br/ufsc/tradetoday/res/MenuButtonUnlight.png"/>
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
                 <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/br/ufsc/enzo/tradetoday/res/MenuButtonLighted.png"/>
+                  <Image iconType="3" name="/br/ufsc/tradetoday/res/MenuButtonLighted.png"/>
                 </Property>
               </Properties>
               <Events>
@@ -318,6 +321,9 @@
             </Property>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_allCodePost" type="java.lang.String" value="analyzePanel1.setEnabled(false);&#xa;analyzePanel1.setVisible(false);&#xa;"/>
+          </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="150" y="60" width="-1" height="-1"/>
@@ -338,6 +344,9 @@
           </Layout>
         </Container>
         <Component class="br.ufsc.tradetoday.graphics.StockInfoPanel" name="stockInfoPanel1">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_allCodePost" type="java.lang.String" value="stockInfoPanel1.setEnabled(false);&#xa;stockInfoPanel1.setVisible(false);&#xa;"/>
+          </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
               <AbsoluteConstraints x="150" y="60" width="-1" height="-1"/>

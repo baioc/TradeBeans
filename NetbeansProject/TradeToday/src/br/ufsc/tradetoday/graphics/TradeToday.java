@@ -122,16 +122,17 @@ public class TradeToday extends javax.swing.JFrame {
         leftPanel.setPreferredSize(new java.awt.Dimension(150, 600));
 
         alertButton.setBackground(new java.awt.Color(204, 0, 0));
-        alertButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/AlertButtonUnlight.png"))); // NOI18N
+        alertButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/tradetoday/res/AlertButtonUnlight.png"))); // NOI18N
         alertButton.setBorder(javax.swing.BorderFactory.createBevelBorder(0));
         alertButton.setBorderPainted(false);
+        alertButton.setDisabledIcon(null);
         alertButton.setFocusPainted(false);
         alertButton.setMaximumSize(new java.awt.Dimension(150, 90));
         alertButton.setMinimumSize(new java.awt.Dimension(150, 90));
         alertButton.setPreferredSize(new java.awt.Dimension(150, 90));
-        alertButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/AlertButtonLight.png"))); // NOI18N
-        alertButton.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/AlertButtonBackLight.png"))); // NOI18N
-        alertButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/AlertButtonBackUnlight.png"))); // NOI18N
+        alertButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/tradetoday/res/AlertButtonLight.png"))); // NOI18N
+        alertButton.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/tradetoday/res/AlertButtonBackLight.png"))); // NOI18N
+        alertButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/tradetoday/res/AlertButtonBackUnlight.png"))); // NOI18N
         alertButton.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 alertButtonStateChanged(evt);
@@ -185,10 +186,10 @@ public class TradeToday extends javax.swing.JFrame {
         topPanel.setBackground(new java.awt.Color(50, 50, 50));
         topPanel.setPreferredSize(new java.awt.Dimension(750, 60));
 
-        menuButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/MenuButtonUnlight.png"))); // NOI18N
+        menuButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/tradetoday/res/MenuButtonUnlight.png"))); // NOI18N
         menuButton.setBorderPainted(false);
         menuButton.setContentAreaFilled(false);
-        menuButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/enzo/tradetoday/res/MenuButtonLighted.png"))); // NOI18N
+        menuButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/tradetoday/res/MenuButtonLighted.png"))); // NOI18N
         menuButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 menuButtonMouseExited(evt);
@@ -237,7 +238,12 @@ public class TradeToday extends javax.swing.JFrame {
         );
 
         mainPanel.add(analyzePanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, -1, -1));
+        analyzePanel1.setEnabled(false);
+        analyzePanel1.setVisible(false);
+
         mainPanel.add(stockInfoPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, -1, -1));
+        stockInfoPanel1.setEnabled(false);
+        stockInfoPanel1.setVisible(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
