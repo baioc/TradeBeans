@@ -23,6 +23,10 @@ public class TradeToday extends javax.swing.JFrame {
         /* Puts this object invisible in init */
         menuPanel.setVisible(false);
         menuPanel.setEnabled(false);
+        analyzePanel1.setVisible(false);
+        analyzePanel1.setEnabled(false);
+        stockInfoPanel1.setVisible(false);
+        stockInfoPanel1.setEnabled(false);
         /*=====================================*/
     }
 
@@ -91,32 +95,37 @@ public class TradeToday extends javax.swing.JFrame {
                 button2MouseEntered(evt);
             }
         });
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
         menuPanel.setLayout(menuPanelLayout);
         menuPanelLayout.setHorizontalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(menuPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         menuPanelLayout.setVerticalGroup(
             menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(menuPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(6, 6, 6)
                 .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        mainPanel.add(menuPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 50, 100, -1));
+        mainPanel.add(menuPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 44, 100, 90));
 
         leftPanel.setBackground(new java.awt.Color(50, 50, 50));
         leftPanel.setPreferredSize(new java.awt.Dimension(150, 600));
@@ -222,28 +231,8 @@ public class TradeToday extends javax.swing.JFrame {
         );
 
         mainPanel.add(topPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 0, 750, -1));
-
-        analyzePanel1.setBackground(new java.awt.Color(242, 42, 42));
-        analyzePanel1.setEnabled(false);
-
-        javax.swing.GroupLayout analyzePanel1Layout = new javax.swing.GroupLayout(analyzePanel1);
-        analyzePanel1.setLayout(analyzePanel1Layout);
-        analyzePanel1Layout.setHorizontalGroup(
-            analyzePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
-        );
-        analyzePanel1Layout.setVerticalGroup(
-            analyzePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 540, Short.MAX_VALUE)
-        );
-
         mainPanel.add(analyzePanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, -1, -1));
-        analyzePanel1.setEnabled(false);
-        analyzePanel1.setVisible(false);
-
         mainPanel.add(stockInfoPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, -1, -1));
-        stockInfoPanel1.setEnabled(false);
-        stockInfoPanel1.setVisible(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -325,8 +314,16 @@ public class TradeToday extends javax.swing.JFrame {
         // TODO add your handling code here:
         // :: TODO :: CALLS GRAPHICAL MENU UPDATE
         alertButton.setSelected(false);
-        stockInfoPanel1 = new StockInfoPanel();
-        
+        String[][] data = {         {"25/07/2000","0.27","0.29","+0.51"},
+                                    {"24/07/2000","0.13","0.27","+0.01"},
+                                    {"23/07/2010","0.25","0.25","+0.00"},
+                                    {"24/07/2000","54","0.00","+0.00"}};
+        String[] header =  {"Date","Open","Close","Delta"};
+        stockInfoPanel1.setVisible(false);
+        stockInfoPanel1.update(data, header, "Microsoft", "Linux Sucks");
+        stockInfoPanel1.repaint();
+        stockInfoPanel1.setVisible(true);
+        stockInfoPanel1.setEnabled(true);
     }//GEN-LAST:event_jList1ValueChanged
 
     private void alertButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_alertButtonStateChanged
@@ -341,6 +338,11 @@ public class TradeToday extends javax.swing.JFrame {
             analyzePanel1.setEnabled(false);
         }
     }//GEN-LAST:event_alertButtonStateChanged
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_jButton2ActionPerformed
     
     private void openMenu(java.awt.event.MouseEvent evt) {
         menuPanel.setVisible(true);
