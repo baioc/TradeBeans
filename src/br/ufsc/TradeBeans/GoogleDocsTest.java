@@ -21,7 +21,7 @@ public class GoogleDocsTest {
 
 			String line;
 			while ((line = file.readLine()) != null) {
-				responseBuilder.append(line + "\n");
+				responseBuilder.append(line).append("\n");
 			}
 
 			file.close();

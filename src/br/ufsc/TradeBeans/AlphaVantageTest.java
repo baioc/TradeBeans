@@ -11,7 +11,7 @@ public class AlphaVantageTest {
 		StringBuilder responseBuilder = new StringBuilder();
 
 		try {
-			AlphaVantageAPI api = new AlphaVantageAPI(null);
+			AlphaVantageAPI api = new AlphaVantageAPI();
 			// BufferedReader file = api.getStock("MSFT", AlphaVantageAPI.TIME_MONTHLY);
 			// BufferedReader file = api.getCrypto("BTC", AlphaVantageAPI.TIME_WEEKLY);
 			BufferedReader file = api.getIndicator(

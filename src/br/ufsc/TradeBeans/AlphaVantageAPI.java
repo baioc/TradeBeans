@@ -40,7 +40,12 @@ public class AlphaVantageAPI extends API {
 					: key;
 	}
 
+	public AlphaVantageAPI() {
+		this(null);
+	}
 
+
+	// @todo change return type
 	// @example https://www.alphavantage.co/documentation/
 
 	/**
@@ -71,7 +76,7 @@ public class AlphaVantageAPI extends API {
 		return super.get(
 			"function=DIGITAL_CURRENCY_", timeUnit,
 			"&symbol=", symbol,
-			"&market=", "CNY",	// @fixme <- Chinese Yen (change market)
+			"&market=", "USD",
 			"&apikey=", this.key,
 			"&datatype=", "json"
 		);
@@ -91,7 +96,7 @@ public class AlphaVantageAPI extends API {
 		return super.get(
 			"function=", indicator,
 			"&symbol=", symbol,
-			"&interval=", timeUnit.toLowerCase(),
+			"&interval=", timeUnit,
 			"&time_period=", Integer.toString(period),
 			"&series_type=", type,
 			"&apikey=", this.key,
