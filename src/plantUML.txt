@@ -11,10 +11,13 @@ abstract class API {
 
 class AlphaVantageAPI {
 	- String key
+	- String readJson(BufferedReader file)
+	- Map<String, Map<String, String>> parseJson(String json, String dataKey)
 	+ AlphaVantageAPI(String key)
-	+ BufferedReader getStock(String symbol, String timeUnit)
-	+ BufferedReader getCrypto(String symbol, String timeUnit)
-	+ BufferedReader getIndicator(String symbol, String timeUnit, String indicator, String type, int period)
+	+ AlphaVantageAPI()
+	+ Map<String, String> getStock(String symbol, String timeUnit)
+	+ Map<String, String> getCrypto(String symbol, String timeUnit)
+	+ Map<String, Map<String, String>> getIndicator(String symbol, String timeUnit, String indicator, int period)
 }
 
 API <|-- AlphaVantageAPI
@@ -25,6 +28,12 @@ class GoogleDocsAPI {
 }
 
 API <|-- GoogleDocsAPI
+
+
+class StockPanel {
+	- DateFormat FORMAT
+	- TimeSeries timeSeriesFromStock(Map<String, String> stock, String name)
+}
 
 
 @enduml

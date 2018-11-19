@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.lang.StringBuilder;
 
 
 /**
@@ -31,21 +32,20 @@ public abstract class API {
 
 	/**
 	 * Makes a GET request to the API.
-	 * @param parameters -- parameters for the API
+	 * @param parameters -- parameters for the API call.
 	 * @return BufferedReader with the response, or null.
 	 * @throws IOException when final address is invalid or couldn't get a response.
 	 */
 	public BufferedReader get(final String... parameters) throws IOException {
-		String params = "";
+		StringBuilder params = new StringBuilder("");
 		for (String p : parameters) {
-			params += p;
+			params.append(p);
 		}
 
 		BufferedReader response = null;
 		try {	// @example https://docs.oracle.com/javase/tutorial/networking/urls/readingURL.html
-
-			URL link = new URL(this.base + params);
-			InputStreamReader downloadStream = new InputStreamReader(link.openStream(), "UTF-8");
+			URL link = new URL(this.base + params.toString());
+			final InputStreamReader downloadStream = new InputStreamReader(link.openStream(), "UTF-8");
 			response = new BufferedReader(downloadStream);
 
 		} catch (IOException up) {
