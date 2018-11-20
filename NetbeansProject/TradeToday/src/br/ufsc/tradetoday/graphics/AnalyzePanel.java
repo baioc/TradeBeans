@@ -40,11 +40,6 @@ public class AnalyzePanel extends javax.swing.JPanel {
         setMinimumSize(new java.awt.Dimension(750, 540));
         setPreferredSize(new java.awt.Dimension(750, 540));
 
-        listaCompra.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(listaCompra);
 
         compra.setBackground(new java.awt.Color(60, 60, 60));
@@ -59,17 +54,17 @@ public class AnalyzePanel extends javax.swing.JPanel {
         venda.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         venda.setText("Venda");
 
-        listaVenda.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane2.setViewportView(listaVenda);
 
         jButton1.setBackground(new java.awt.Color(85, 85, 85));
         jButton1.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         jButton1.setText("Analyze");
         jButton1.setToolTipText("");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -109,6 +104,15 @@ public class AnalyzePanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        // TODO : ANALYZE FUNC
+        //String[] buy  = 
+        //String[] sell =  
+        //listaCompra.setModel(new javax.swing.DefaultComboBoxModel<>(buy) );
+        //listaVenda.setModel(new javax.swing.DefaultComboBoxModel<>(sell) );
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel compra;
@@ -119,5 +123,7 @@ public class AnalyzePanel extends javax.swing.JPanel {
     private javax.swing.JList<String> listaVenda;
     private javax.swing.JLabel venda;
     // End of variables declaration//GEN-END:variables
+    
+    
     
 }
