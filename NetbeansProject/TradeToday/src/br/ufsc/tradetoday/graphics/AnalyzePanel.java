@@ -119,4 +119,5 @@ public class AnalyzePanel extends javax.swing.JPanel {
     private javax.swing.JList<String> listaVenda;
     private javax.swing.JLabel venda;
     // End of variables declaration//GEN-END:variables
+    
 }
