@@ -253,7 +253,7 @@ public class StockInfoPanel extends javax.swing.JPanel {
     private void defineTableData(String[][] data,String[] header){
         lastUpdate = data[0];
         tableHeader = header;
-        for(int i = 1;i < header.length;i++){
+        for(int i = 1;i < data.length;i++){
             tableData[i-1] = data[i];
         }
     }
@@ -261,7 +261,7 @@ public class StockInfoPanel extends javax.swing.JPanel {
     private String generateLabels(){
         String r = "";
         for(int i = 0;i < tableHeader.length;i++){
-            r += tableHeader[i] + " : " + tableData[0][i] + "\n";
+            r += tableHeader[i] + " : " + lastUpdate[i] + "\n";
         }
         return r;
     }
@@ -270,8 +270,9 @@ public class StockInfoPanel extends javax.swing.JPanel {
         this.name = name;
         this.desc = desc;
         defineTableData(data,header);
-        generateLabels();
-        initComponents();
+        lUpdtText.setText(generateLabels());
+        jLabel1.setText(name);
+        lUpdtText1.setText(desc);
         this.repaint();
     }
     
