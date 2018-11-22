@@ -1,0 +1,39 @@
+@startuml
+
+
+abstract class API {
+	- String base
+	# API(String location)
+	+ String getLocation()
+	+ BufferedReader get(String... parameters)
+}
+
+
+class AlphaVantageAPI {
+	- String key
+	- String readJson(BufferedReader file)
+	- Map<String, Map<String, String>> parseJson(String json, String dataKey)
+	+ AlphaVantageAPI(String key)
+	+ AlphaVantageAPI()
+	+ Map<String, String> getStock(String symbol, String timeUnit)
+	+ Map<String, String> getCrypto(String symbol, String timeUnit)
+	+ Map<String, Map<String, String>> getIndicator(String symbol, String timeUnit, String indicator, int period)
+}
+
+API <|-- AlphaVantageAPI
+
+
+class GoogleDocsAPI {
+	+ GoogleDocsAPI()
+}
+
+API <|-- GoogleDocsAPI
+
+
+class StockPanel {
+	- DateFormat FORMAT
+	- TimeSeries timeSeriesFromStock(Map<String, String> stock, String name)
+}
+
+
+@enduml
