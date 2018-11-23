@@ -45,7 +45,7 @@ public class ConfigHandler {
         return cfgFile;
     }
     
-    private static java.io.File getFileDirPath() {
+    static java.io.File getFileDirPath() {
         java.io.File cfgDir = new java.io.File(getDefaultDir(), "TradeToday");
         return cfgDir;
     }

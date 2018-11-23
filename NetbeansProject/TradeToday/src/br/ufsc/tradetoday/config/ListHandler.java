@@ -9,12 +9,18 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import br.ufsc.tradetoday.backend.*;
+import java.io.BufferedWriter;
+import java.io.Writer;
+import org.apache.commons.csv.CSVPrinter;
 
 /**
  *
@@ -27,14 +33,33 @@ public class ListHandler {
     private static String[][] list = null;
     private static String selectedType = TYPE_DEFAULT;
     
+    private static String gdocURL = "spreadsheets/d/e/2PACX"
+                                  + "-1vTthBZd6gPf6Ak8R0cXz"
+                                  + "xvoB-_9SkMcEyNqmaCjPNT"
+                                  + "CXLnc-rIz_e1VF55iGS7SB"
+                                  + "1ECQUjmYDg2Mk8F/pub?ou"
+                                  + "tput=csv";
+    private static long lastUpdt = 0;
     private static java.io.BufferedReader a;
     
     public static void updateList() {
-        try {
-            String path = "/home/100000000901519/";
-            String name = "stocks.csv";
-            java.io.Reader reader = java.nio.file.Files.newBufferedReader(
+        java.io.Reader reader = null;
+        try{
+            String path = ConfigHandler.getFileDirPath().toString();
+            String name = "/stocks.csv";
+            long temp = System.currentTimeMillis();
+            long delta = temp - lastUpdt;
+            lastUpdt = temp;
+            if(!Files.exists(Paths.get(path,name)) || delta > 300000){
+                createList(Paths.get(path,name));
+            }
+            reader = java.nio.file.Files.newBufferedReader(
                     java.nio.file.Paths.get(path,name));
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        try {
+            
             CSVParser p = new CSVParser(reader,
                         CSVFormat.DEFAULT
                                 .withHeader("symbol",
@@ -119,6 +144,25 @@ public class ListHandler {
     
     public static String getSelectedType(){
         return selectedType;
+    }
+    
+    private static void createList(java.nio.file.Path pathToWrite){
+        GoogleDocsAPI gdoc = new GoogleDocsAPI();
+        try{
+            Reader reader = gdoc.get(gdocURL);
+            Writer wr = Files.newBufferedWriter(pathToWrite);
+            CSVParser r = new CSVParser(reader, CSVFormat.DEFAULT);
+            CSVPrinter printer = new CSVPrinter(wr, CSVFormat.DEFAULT);
+            for(CSVRecord line : r){
+                printer.printRecord(line);
+            }
+            reader.close();
+            wr.flush();
+            r.close();
+            printer.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
     public static void main(String [] args) throws FileNotFoundException{

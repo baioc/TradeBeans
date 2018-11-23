@@ -5,6 +5,8 @@
  */
 package br.ufsc.tradetoday.config;
 
+import br.ufsc.tradetoday.backend.AlphaVantageAPI;
+import static br.ufsc.tradetoday.backend.AlphaVantageAPI.*;
 /**
     Configuration Handler for TradeToday
 
@@ -17,14 +19,14 @@ Inteface :
 */
 public class Config {
     // Static default values
-    public static final String DEFAULT_REFRESH_RATE = "Daily";
-    public static final String DEFAULT_RANKING_ALGORITHM = "MovingAverage";
+    public static final String DEFAULT_REFRESH_RATE = AlphaVantageAPI.TIME_DAILY;
+    public static final String DEFAULT_RANKING_ALGORITHM = AlphaVantageAPI.INDICATOR_AVERAGE_SIMPLE;
     public static final String DEFAULT_CUSTOM_KEY = "";
-    public static final String REFRESH_DAILY = "Daily";
-    public static final String REFRESH_WEEKLY = "Weekly";
-    public static final String REFRESH_MONTHLY = "Monthly";
-    public static final String RANKING_AVERAGE = "MovingAverage";
-    public static final String RANKING_BOLLINGER = "BollingerBand";
+    public static final String REFRESH_DAILY = AlphaVantageAPI.TIME_DAILY;
+    public static final String REFRESH_WEEKLY = AlphaVantageAPI.TIME_WEEKLY;
+    public static final String REFRESH_MONTHLY = AlphaVantageAPI.TIME_MONTHLY;
+    public static final String RANKING_AVERAGE = AlphaVantageAPI.INDICATOR_AVERAGE_SIMPLE;
+    public static final String RANKING_BOLLINGER = AlphaVantageAPI.INDICATOR_OSC_BOLLINGER;
     
     // Headers on CSV File | Configurations
     private String refreshRate;
