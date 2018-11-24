@@ -25,16 +25,15 @@ Inteface :
         
 */
 public class ConfigHandler {
+	
     private static final String saveFileName = "TradeToday/config.csv";
-    private static java.io.File saveFile = getFilePath();
     
     private static Config cfg = new Config();
     
     private static String getDefaultDir() {
-        if(OSUtils.isWindows()){
+        if (OSUtils.isWindows()) {
             return System.getenv("APPDATA");
-        }
-        if(OSUtils.isUnix()) {
+        } else if (OSUtils.isUnix()) {
             return System.getProperty("user.home");
         }
         return System.getProperty("user.dir");
@@ -51,21 +50,21 @@ public class ConfigHandler {
     }
     
     public static Config getConfig() {
-        if(!getFilePath().exists()) {
+        if (!getFilePath().exists()) {
             createConfigFile();
-            System.out.println("1");
         }
-        System.out.println("2");
         updateConfigFile();
         return cfg;
     }
     
     private static void createConfigFile() {
+    	System.out.println("Creating config file.");
+    	
         try {
-            // Create the dir and file: 
-            System.out.println(getFilePath().exists());
+            // Create the dir and file
             getFileDirPath().mkdirs();
             getFilePath().createNewFile();
+            
             // Now write on it
             java.io.Writer writer = Files.newBufferedWriter(
                     Paths.get(getDefaultDir(),saveFileName));
@@ -78,7 +77,9 @@ public class ConfigHandler {
                           Config.DEFAULT_RANKING_ALGORITHM,
                           Config.DEFAULT_CUSTOM_KEY);
             p.flush();
-        } catch(IOException e){
+            p.close();
+            
+        } catch(IOException e) {
             System.err.println("Can't create file");
             System.err.println(e.getMessage());
         }
@@ -89,6 +90,7 @@ public class ConfigHandler {
             //Locate the file path and creates a reader for it
             java.io.Reader reader = Files.newBufferedReader(
                     Paths.get(getDefaultDir(),saveFileName));
+            
             //Now parse that file to an CSV File
             CSVParser parser = new CSVParser(reader,
                     CSVFormat.DEFAULT
@@ -102,11 +104,12 @@ public class ConfigHandler {
                            r.get("rankingAlgorithm"),
                            r.get("CustomKey"));
             }
+            parser.close();
+            
         } catch (IOException ex) {
             Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println(ex.getMessage());
         }
-        
     }
     
     private static void writeOnConfigFile(String refreshRate,String rankingAlgorithm,String customKey){
@@ -120,9 +123,12 @@ public class ConfigHandler {
                                 );
             p.printRecord(refreshRate,rankingAlgorithm,customKey);
             p.flush();
-        } catch(IOException e){
+            p.close();
+            
+        } catch(IOException e) {
             System.err.println(e.getMessage());
         }
+        
         updateConfigFile();
     }
     

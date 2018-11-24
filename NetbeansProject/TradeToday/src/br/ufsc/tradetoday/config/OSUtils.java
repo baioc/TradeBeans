@@ -11,30 +11,34 @@ package br.ufsc.tradetoday.config;
  */
 public class OSUtils {
     
-    private static String OS = null;
     private static String realOS = null;
+    
+    
     public static String getOsRealName() {
-        if(realOS == null) { realOS = System.getProperty("os.name"); }
+        if (realOS == null) {
+        	realOS = System.getProperty("os.name");
+        }
         return realOS;
     }
+    
     public static boolean isWindows() {
         return getOsRealName().startsWith("Windows");
     }
+    
     public static boolean isUnix() {
         return getOsRealName().startsWith("Linux");
     }
+    
     public static boolean isMac() {
         return getOsRealName().startsWith("Mac");
     }
-    public static String getOsName(){
-        OS = getOsRealName();
-        if(isWindows()){
+    
+    public static String getOsName() {
+        if (isWindows()) {
             return "Windows";
-        }
-        if(isUnix()){
+        } else if (isUnix()) {
             return "Linux";
-        }
-        if(isMac()){
+        } else if (isMac()) {
             return "Mac";
         }
         return "Others";

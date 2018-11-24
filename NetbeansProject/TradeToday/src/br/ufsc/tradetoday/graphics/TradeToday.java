@@ -7,7 +7,6 @@ package br.ufsc.tradetoday.graphics;
 
 import br.ufsc.tradetoday.config.ConfigHandler;
 import br.ufsc.tradetoday.config.ListHandler;
-import java.awt.event.ItemEvent;
 
 /**
  *
@@ -256,7 +255,7 @@ public class TradeToday extends javax.swing.JFrame {
     private void menuPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuPanelMouseExited
         menuPanel.setVisible(false);
         menuPanel.setEnabled(false);
-        if(!inMenuBtn){
+        if (!inMenuBtn) {
             menuOpened = false;
         }
     }//GEN-LAST:event_menuPanelMouseExited
@@ -298,15 +297,14 @@ public class TradeToday extends javax.swing.JFrame {
 
     private void openConfigMenu(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openConfigMenu
         // TODO add your handling code here:
-        if(cfgMenu == null){
+        if (cfgMenu == null) {
             cfgMenu = new ConfigMenu();
             cfgMenu.setVisible(true);
         }
-        if(!cfgMenu.isOpened()){
+        if( !cfgMenu.isOpened()) {
             cfgMenu = new ConfigMenu();
             cfgMenu.setVisible(true);
         }
-        
         closeMenu(null);
     }//GEN-LAST:event_openConfigMenu
 
@@ -329,11 +327,11 @@ public class TradeToday extends javax.swing.JFrame {
     private void alertButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_alertButtonStateChanged
         // TODO add your handling code here:
         // TODO OPEN ANALIZE PANEL
-        if(alertButton.isSelected()){
+        if (alertButton.isSelected()) {
             analyzePanel1.setVisible(true);
             analyzePanel1.setEnabled(true);
             //analyzePanel1.startAnalysis();
-        }else{
+        } else {
             analyzePanel1.setVisible(false);
             analyzePanel1.setEnabled(false);
         }

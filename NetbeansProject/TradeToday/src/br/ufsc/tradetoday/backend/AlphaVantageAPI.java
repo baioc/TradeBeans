@@ -1,7 +1,6 @@
 package br.ufsc.tradetoday.backend;
 
 import java.util.Map;
-import java.io.Reader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.StringBuilder;
@@ -176,7 +175,7 @@ public class AlphaVantageAPI extends API {
 				"&series_type=", "close",
 				"&apikey=", this.key,
 				"&datatype=", "json"
-			);	// @note other parameters set to default
+			);	// @note other parameters set to alphavantage's defaults
 
 			json = readJson(file);
 			file.close();
@@ -226,15 +225,18 @@ public class AlphaVantageAPI extends API {
 	 */
 	public static void main(String[] args) {
 		final AlphaVantageAPI api = new AlphaVantageAPI();
+		
+		String type = "indicator";
+		if (args.length > 0) {
+			type = args[0].toLowerCase();
+		}
 
 		Map<String, String> data = null;
-		switch (args[0].toLowerCase()) {
+		switch (type) {
 			case "stock":
 				data = api.getStock("MSFT", AlphaVantageAPI.TIME_MONTHLY);
 				data.entrySet()
 					.stream()
-					//.sorted()
-					//.map(data::get)
 					.forEach(System.out::println);
 				break;
 
@@ -242,8 +244,6 @@ public class AlphaVantageAPI extends API {
 				data = api.getCrypto("BTC", AlphaVantageAPI.TIME_WEEKLY);
 				data.entrySet()
 					.stream()
-					//.sorted()
-					//.map(data::get)
 					.forEach(System.out::println);
 				break;
 

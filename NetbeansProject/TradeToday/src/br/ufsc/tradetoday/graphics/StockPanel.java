@@ -14,7 +14,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.ChartFactory;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.RegularTimePeriod;
 import org.jfree.data.time.Day;
 
 import br.ufsc.tradetoday.backend.AlphaVantageAPI;

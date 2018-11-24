@@ -39,7 +39,7 @@ public class ConfigMenu extends javax.swing.JFrame {
         refreshRate = new javax.swing.JLabel();
         rankingAlgorithm = new javax.swing.JLabel();
         customKey = new javax.swing.JLabel();
-        rrComBox = new javax.swing.JComboBox(Config.getRefreshTimes());
+        rrComBox = new javax.swing.JComboBox<>(Config.getRefreshTimes());
         raComBox = new javax.swing.JComboBox<>();
         ckTextField = new javax.swing.JFormattedTextField();
         applyBtn = new javax.swing.JButton();
@@ -162,10 +162,9 @@ public class ConfigMenu extends javax.swing.JFrame {
         String rr = Config.getRefreshTimes()[rrComBox.getSelectedIndex()];
         String ra = Config.getRankingAlgorithms()[raComBox.getSelectedIndex()];
         String ck = ckTextField.getText();
-        if(ck.length() < 16 && ck.length() != 0){
+        if (ck.length() < 16 && ck.length() != 0) {
             setAlwaysOnTop(false);
-            JOptionPane.showMessageDialog(null, "Invalid Custom Key!", "Error",
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Invalid Custom Key!", "Error", JOptionPane.ERROR_MESSAGE);
             setAlwaysOnTop(true);
             return;
         }
@@ -209,11 +208,6 @@ public class ConfigMenu extends javax.swing.JFrame {
     private class JTextFieldLimit extends PlainDocument {
         private int limit;
         JTextFieldLimit(int limit) {
-            super();
-            this.limit = limit;
-        }
-
-        JTextFieldLimit(int limit, boolean upper) {
             super();
             this.limit = limit;
         }
