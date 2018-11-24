@@ -67,7 +67,7 @@ public class AlphaVantageAPI extends API {
 			file = super.get(
 				"function=TIME_SERIES_", timeUnit.toUpperCase(),
 				"&symbol=", symbol.toUpperCase(),
-				"&outputsize=", "compact",
+				"&outputsize=", "full",
 				"&apikey=", this.key,
 				"&datatype=", "json"
 			);
@@ -93,6 +93,8 @@ public class AlphaVantageAPI extends API {
 		}
 
 		final Map<String, Map<String, String>> parsedData = parseJson(json, dataKey);
+		if (parsedData == null) return null;
+		
 		Map<String, String> data = new LinkedHashMap<>(parsedData.size());
 
 		for (String dateStamp : parsedData.keySet()) {
@@ -129,7 +131,7 @@ public class AlphaVantageAPI extends API {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
+			throw new IllegalArgumentException(e);
 		}
 
 		String dataKey = null;
@@ -142,6 +144,8 @@ public class AlphaVantageAPI extends API {
 		}
 
 		final Map<String, Map<String, String>> parsedData = parseJson(json, dataKey);
+		if (parsedData == null) return null;
+		
 		Map<String, String> data = new LinkedHashMap<>(parsedData.size());
 
 		for (String dateStamp : parsedData.keySet()) {
@@ -249,7 +253,7 @@ public class AlphaVantageAPI extends API {
 
 			case "indicator":
 				Map<String, Map<String, String>> indicator = api.getIndicator(
-					"AAPL", AlphaVantageAPI.TIME_DAILY,
+					"GOOGL", AlphaVantageAPI.TIME_DAILY,
 					AlphaVantageAPI.INDICATOR_AVERAGE_SIMPLE, 30
 				);
 				for (String dateStamp : indicator.keySet()) {
