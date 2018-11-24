@@ -318,14 +318,14 @@
         <Component class="br.ufsc.tradetoday.graphics.AnalyzePanel" name="analyzePanel1">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="150" y="60" width="-1" height="-1"/>
+              <AbsoluteConstraints x="150" y="60" width="740" height="510"/>
             </Constraint>
           </Constraints>
         </Component>
         <Component class="br.ufsc.tradetoday.graphics.StockInfoPanel" name="stockInfoPanel1">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="150" y="60" width="-1" height="-1"/>
+              <AbsoluteConstraints x="150" y="60" width="740" height="510"/>
             </Constraint>
           </Constraints>
         </Component>

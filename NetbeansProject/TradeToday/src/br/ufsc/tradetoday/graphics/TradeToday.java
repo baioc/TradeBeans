@@ -5,8 +5,11 @@
  */
 package br.ufsc.tradetoday.graphics;
 
+import br.ufsc.tradetoday.backend.AlphaVantageAPI;
 import br.ufsc.tradetoday.config.ConfigHandler;
 import br.ufsc.tradetoday.config.ListHandler;
+import java.util.Map;
+import sun.security.krb5.Config;
 
 /**
  *
@@ -18,6 +21,7 @@ public class TradeToday extends javax.swing.JFrame {
      * Creates new form TradeTodat
      */
     public TradeToday() {
+        ava = new AlphaVantageAPI(ConfigHandler.getConfig().getCustomKey());
         initComponents();
         /* Puts this object invisible in init */
         menuPanel.setVisible(false);
@@ -46,7 +50,7 @@ public class TradeToday extends javax.swing.JFrame {
         leftPanel = new javax.swing.JPanel();
         alertButton = new javax.swing.JToggleButton();
         listStocks = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        jList1 = new javax.swing.JList<String>();
         typeMenu = new javax.swing.JButton();
         topPanel = new javax.swing.JPanel();
         menuButton = new javax.swing.JButton();
@@ -108,7 +112,7 @@ public class TradeToday extends javax.swing.JFrame {
             .addGroup(menuPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, Short.MAX_VALUE)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -131,7 +135,7 @@ public class TradeToday extends javax.swing.JFrame {
 
         alertButton.setBackground(new java.awt.Color(204, 0, 0));
         alertButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/ufsc/tradetoday/res/AlertButtonUnlight.png"))); // NOI18N
-        alertButton.setBorder(javax.swing.BorderFactory.createBevelBorder(0));
+        alertButton.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         alertButton.setBorderPainted(false);
         alertButton.setDisabledIcon(null);
         alertButton.setFocusPainted(false);
@@ -230,8 +234,8 @@ public class TradeToday extends javax.swing.JFrame {
         );
 
         mainPanel.add(topPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 0, 750, -1));
-        mainPanel.add(analyzePanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, -1, -1));
-        mainPanel.add(stockInfoPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, -1, -1));
+        mainPanel.add(analyzePanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, 740, 510));
+        mainPanel.add(stockInfoPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, 740, 510));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -312,18 +316,37 @@ public class TradeToday extends javax.swing.JFrame {
         // TODO add your handling code here:
         // :: TODO :: CALLS GRAPHICAL MENU UPDATE
         alertButton.setSelected(false);
-        String[][] data = {         {"25/07/2000","0.27","0.29","+0.51"},
+        String selectedValue = jList1.getSelectedValue();
+        String[][] ddata = {         {"25/07/2000","0.27","0.29","+0.51"},
                                     {"24/07/2000","0.13","0.27","+0.01"},
                                     {"23/07/2010","0.25","0.25","+0.00"},
                                     {"24/07/2000","54","0.00","+0.00"}};
-        String[] header =  {"Date","Open","Close","Delta"};
+        String[] dheader =  {"Date","Value"};
+        Map<String,String> mapData = typeMenu.getText().equals
+        (ListHandler.TYPE_STOCK)? 
+            ava.getStock(selectedValue, 
+                    ConfigHandler.getConfig().getRefreshRate()) :
+            ava.getCrypto(selectedValue,
+                    ConfigHandler.getConfig().getRefreshRate());
+        String[][] data = convertMapToString(mapData);
         stockInfoPanel1.setVisible(false);
-        stockInfoPanel1.update(data, header, "Microsoft", "Linux Sucks");
+        stockInfoPanel1.update(data, dheader,
+                ListHandler.getNameOf(selectedValue), 
+                ListHandler.getDescOf(selectedValue));
         stockInfoPanel1.repaint();
         stockInfoPanel1.setVisible(true);
         stockInfoPanel1.setEnabled(true);
     }//GEN-LAST:event_jList1ValueChanged
 
+    private String[][] convertMapToString(Map<String,String> memoMap){
+        String[][] data = new String[memoMap.size()][];
+        int ii =0;
+        for(Map.Entry<String,String> entry : memoMap.entrySet()){
+            data[ii++] = new String[] { entry.getKey(), entry.getValue() };
+        }
+        return data;
+    }
+    
     private void alertButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_alertButtonStateChanged
         // TODO add your handling code here:
         // TODO OPEN ANALIZE PANEL
@@ -418,7 +441,7 @@ public class TradeToday extends javax.swing.JFrame {
     //Custom Manual Variables
     //private String menuType = ConfigHandler.getConfig().getMenuType();
     private ConfigMenu cfgMenu = null;
-    
+    private AlphaVantageAPI ava = null;
     //Custom Manual Methods
     //private void changeType()
 }

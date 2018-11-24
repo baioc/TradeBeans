@@ -180,6 +180,23 @@ public class ListHandler {
         }
     }
     
+    public static String getDescOf(String stockSymbol){
+        for(int i = 0;i < list.length;i++){
+            if(list[i][0].equals(stockSymbol)){
+                return list[i][3];
+            }
+        }
+        return null;
+    }    
+    
+    public static String getNameOf(String stockSymbol){
+        for(int i = 0;i < list.length;i++){
+            if(list[i][0].equals(stockSymbol)){
+                return list[i][2];
+            }
+        }
+        return null;
+    }   
     
     public static void main(String[] args) throws FileNotFoundException {
         String[] c = getSymbolsCrypto();

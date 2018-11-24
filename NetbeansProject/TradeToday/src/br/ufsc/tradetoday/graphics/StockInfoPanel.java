@@ -14,6 +14,8 @@ public class StockInfoPanel extends javax.swing.JPanel {
     /**
      * Creates new form AnalyzePanel
      */
+    private javax.swing.JPanel chart;
+    
     public StockInfoPanel() {
         this.name = "DEFAULT_NAME";
         this.desc = "DEFAULT_DESC";
@@ -28,6 +30,7 @@ public class StockInfoPanel extends javax.swing.JPanel {
         generateLabels();
         initComponents();
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
