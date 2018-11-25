@@ -67,7 +67,7 @@ public class AlphaVantageAPI extends API {
 			file = super.get(
 				"function=TIME_SERIES_", timeUnit.toUpperCase(),
 				"&symbol=", symbol.toUpperCase(),
-				//"&outputsize=", "full",
+				"&outputsize=", "full",
 				"&apikey=", this.key,
 				"&datatype=", "json"
 			);

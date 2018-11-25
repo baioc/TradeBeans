@@ -5,6 +5,17 @@
  */
 package br.ufsc.tradetoday.graphics;
 
+import static br.ufsc.tradetoday.graphics.StockPanel.timeSeriesFromStock;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jfree.data.time.TimeSeries;
+
 /**
  *
  * @author 18100527
@@ -14,7 +25,6 @@ public class StockInfoPanel extends javax.swing.JPanel {
     /**
      * Creates new form AnalyzePanel
      */
-    private javax.swing.JPanel chart;
     
     public StockInfoPanel() {
         this.name = "DEFAULT_NAME";
@@ -29,6 +39,8 @@ public class StockInfoPanel extends javax.swing.JPanel {
         defineTableData(data,header);
         generateLabels();
         initComponents();
+        graphicsPanel.add(chart);
+        chart.setBounds(0, 0, graphicsPanel.getWidth(), graphicsPanel.getHeight());
     }
     
 
@@ -42,6 +54,7 @@ public class StockInfoPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         graphicsPanel = new javax.swing.JPanel();
+        chart = new br.ufsc.tradetoday.graphics.StockPanel(new Dimension(438,294));
         infoScroll = new javax.swing.JScrollPane();
         infoTable = new javax.swing.JTable();
         lUpdtPanel = new javax.swing.JPanel();
@@ -66,167 +79,176 @@ public class StockInfoPanel extends javax.swing.JPanel {
         graphicsPanel.setLayout(graphicsPanelLayout);
         graphicsPanelLayout.setHorizontalGroup(
             graphicsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 450, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, graphicsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
+                .addContainerGap())
         );
         graphicsPanelLayout.setVerticalGroup(
             graphicsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(graphicsPanelLayout.createSequentialGroup()
+                .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         infoScroll.setBackground(new java.awt.Color(30, 30, 30));
         infoScroll.setPreferredSize(new java.awt.Dimension(726, 200));
 
         infoTable.setBackground(new java.awt.Color(150, 150, 150));
-        infoTable.setModel(new javax.swing.table.DefaultTableModel(tableData,tableHeader) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                //all cells false
-                return false;
-            }
-        });
-        infoTable.setFillsViewportHeight(true);
-        infoTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        infoScroll.setViewportView(infoTable);
-        /*CUSTOM CODE ZONE*/
-        infoTable.getTableHeader().setReorderingAllowed(false);
-        /*END OF CUSTOM CODE ZONE*/
+        infoTable.setModel(new javax.swing.table.DefaultTableModel
+            (tableData,tableHeader){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    //all cells false
+                    return false;
+                }
+            });
+            infoTable.setFillsViewportHeight(true);
+            infoTable.setFocusable(false);
+            infoTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+            infoScroll.setViewportView(infoTable);
+            /*CUSTOM CODE ZONE*/
+            infoTable.getTableHeader().setReorderingAllowed(false);
+            /*END OF CUSTOM CODE ZONE*/
 
-        lUpdtPanel.setBackground(new java.awt.Color(70, 70, 70));
+            lUpdtPanel.setBackground(new java.awt.Color(70, 70, 70));
 
-        lstUpdtHead.setFont(new java.awt.Font("Ubuntu", 1, 28)); // NOI18N
-        lstUpdtHead.setForeground(new java.awt.Color(250, 250, 250));
-        lstUpdtHead.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lstUpdtHead.setText("Last Update :");
+            lstUpdtHead.setFont(new java.awt.Font("Ubuntu", 1, 28)); // NOI18N
+            lstUpdtHead.setForeground(new java.awt.Color(250, 250, 250));
+            lstUpdtHead.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            lstUpdtHead.setText("Last Update :");
 
-        lUpdtScrll.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        lUpdtScrll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        lUpdtScrll.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        lUpdtScrll.setOpaque(false);
+            lUpdtScrll.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+            lUpdtScrll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            lUpdtScrll.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+            lUpdtScrll.setOpaque(false);
 
-        lUpdtText.setEditable(false);
-        lUpdtText.setBackground(new java.awt.Color(70, 70, 70));
-        lUpdtText.setColumns(20);
-        lUpdtText.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
-        lUpdtText.setForeground(new java.awt.Color(250, 250, 250));
-        lUpdtText.setRows(5);
-        lUpdtText.setTabSize(4);
-        lUpdtText.setText(generateLabels());
-        lUpdtText.setHighlighter(null);
-        lUpdtScrll.setViewportView(lUpdtText);
+            lUpdtText.setEditable(false);
+            lUpdtText.setBackground(new java.awt.Color(70, 70, 70));
+            lUpdtText.setColumns(20);
+            lUpdtText.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
+            lUpdtText.setForeground(new java.awt.Color(250, 250, 250));
+            lUpdtText.setLineWrap(true);
+            lUpdtText.setRows(5);
+            lUpdtText.setTabSize(4);
+            lUpdtText.setText(generateLabels());
+            lUpdtText.setHighlighter(null);
+            lUpdtScrll.setViewportView(lUpdtText);
 
-        javax.swing.GroupLayout lUpdtPanelLayout = new javax.swing.GroupLayout(lUpdtPanel);
-        lUpdtPanel.setLayout(lUpdtPanelLayout);
-        lUpdtPanelLayout.setHorizontalGroup(
-            lUpdtPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(lUpdtPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(lUpdtPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lstUpdtHead, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
-                    .addComponent(jSeparator1)
-                    .addComponent(lUpdtScrll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        lUpdtPanelLayout.setVerticalGroup(
-            lUpdtPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, lUpdtPanelLayout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(lstUpdtHead, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lUpdtScrll, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+            javax.swing.GroupLayout lUpdtPanelLayout = new javax.swing.GroupLayout(lUpdtPanel);
+            lUpdtPanel.setLayout(lUpdtPanelLayout);
+            lUpdtPanelLayout.setHorizontalGroup(
+                lUpdtPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(lUpdtPanelLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(lUpdtPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(lstUpdtHead, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                        .addComponent(jSeparator1)
+                        .addComponent(lUpdtScrll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addContainerGap(14, Short.MAX_VALUE))
+            );
+            lUpdtPanelLayout.setVerticalGroup(
+                lUpdtPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, lUpdtPanelLayout.createSequentialGroup()
+                    .addGap(6, 6, 6)
+                    .addComponent(lstUpdtHead, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lUpdtScrll, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+            );
 
-        lstUpdtHead1.setFont(new java.awt.Font("Ubuntu", 1, 28)); // NOI18N
-        lstUpdtHead1.setForeground(new java.awt.Color(250, 250, 250));
-        lstUpdtHead1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lstUpdtHead1.setText("Others Updates");
+            lstUpdtHead1.setFont(new java.awt.Font("Ubuntu", 1, 28)); // NOI18N
+            lstUpdtHead1.setForeground(new java.awt.Color(250, 250, 250));
+            lstUpdtHead1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            lstUpdtHead1.setText("Others Updates");
 
-        jPanel1.setBackground(new java.awt.Color(70, 70, 70));
+            jPanel1.setBackground(new java.awt.Color(70, 70, 70));
 
-        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(250, 250, 250));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText(name);
+            jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+            jLabel1.setForeground(new java.awt.Color(250, 250, 250));
+            jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            jLabel1.setText(name);
 
-        lUpdtScrll1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        lUpdtScrll1.setForeground(new java.awt.Color(250, 250, 250));
-        lUpdtScrll1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        lUpdtScrll1.setOpaque(false);
+            lUpdtScrll1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+            lUpdtScrll1.setForeground(new java.awt.Color(250, 250, 250));
+            lUpdtScrll1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+            lUpdtScrll1.setOpaque(false);
 
-        lUpdtText1.setEditable(false);
-        lUpdtText1.setBackground(new java.awt.Color(70, 70, 70));
-        lUpdtText1.setColumns(20);
-        lUpdtText1.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
-        lUpdtText1.setForeground(new java.awt.Color(250, 250, 250));
-        lUpdtText1.setLineWrap(true);
-        lUpdtText1.setRows(5);
-        lUpdtText1.setTabSize(4);
-        lUpdtText1.setText(desc);
-        lUpdtText1.setHighlighter(null);
-        lUpdtScrll1.setViewportView(lUpdtText1);
+            lUpdtText1.setEditable(false);
+            lUpdtText1.setBackground(new java.awt.Color(70, 70, 70));
+            lUpdtText1.setColumns(20);
+            lUpdtText1.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+            lUpdtText1.setForeground(new java.awt.Color(250, 250, 250));
+            lUpdtText1.setLineWrap(true);
+            lUpdtText1.setRows(5);
+            lUpdtText1.setTabSize(4);
+            lUpdtText1.setText(desc);
+            lUpdtText1.setHighlighter(null);
+            lUpdtScrll1.setViewportView(lUpdtText1);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lUpdtScrll1))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lUpdtScrll1, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+            javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+            jPanel1.setLayout(jPanel1Layout);
+            jPanel1Layout.setHorizontalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lUpdtScrll1))
+                    .addContainerGap())
+            );
+            jPanel1Layout.setVerticalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(lUpdtScrll1, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+                    .addContainerGap())
+            );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+            javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+            this.setLayout(layout);
+            layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(graphicsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lstUpdtHead1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addGap(0, 0, Short.MAX_VALUE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(lUpdtPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                        .addComponent(infoScroll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+            layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(graphicsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lstUpdtHead1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lUpdtPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                    .addComponent(infoScroll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(graphicsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lUpdtPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lstUpdtHead1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                .addComponent(infoScroll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-    }// </editor-fold>//GEN-END:initComponents
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lUpdtPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lstUpdtHead1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                    .addComponent(infoScroll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap())
+            );
+        }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private br.ufsc.tradetoday.graphics.StockPanel chart;
     private javax.swing.JPanel graphicsPanel;
     private javax.swing.JScrollPane infoScroll;
     private javax.swing.JTable infoTable;
@@ -243,11 +265,11 @@ public class StockInfoPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
     
     // Custom Variables
-    private String[][] tableData = {{"24/07/2000","0.25","0.27","+0.01"},
-                                    {"23/07/2000","0.25","0.25","+0.00"},
-                                    {"22/07/2000","0.27","0.25","-0.01"}};
-    private String[] tableHeader =  {"Date","Open","Close","Delta"};
-    private String[]  lastUpdate = {"25/07/2000","0.27","0.29","+0.01"};
+    private String[][] tableData = {{"24/07/2000","0.25"},
+                                    {"23/07/2000","0.25"},
+                                    {"22/07/2000","0.27"}};
+    private String[] tableHeader =  {"Date (DD/MM/YYYY)","Value ($USD)"};
+    private String[]  lastUpdate = {"25/07/2000","0.27"};
     private String name;
     private String desc;
     
@@ -258,12 +280,26 @@ public class StockInfoPanel extends javax.swing.JPanel {
         for (int i = 1;i < data.length;i++) {
             tableData[i-1] = data[i];
         }
+        parseTable();
+    }
+    
+    private void parseTable(){
+        String[] date = lastUpdate[0].split("-");
+        lastUpdate[0] = String.format("%s/%s/%s",date[2],date[1],date[0]);
+        lastUpdate[1] = String.format("$ %f", Double.parseDouble(lastUpdate[1]));
+        for(int i = 0;i < tableData.length;i++){
+            date = tableData[i][0].split("-");
+            tableData[i][0] = String.format("%s/%s/%s",
+                    date[2],date[1],date[0]);
+            double v = Double.parseDouble(tableData[i][1]);
+            tableData[i][1] = String.format("$ %f",v);
+        }
     }
     
     private String generateLabels(){
         String r = "";
         for (int i = 0; i < tableHeader.length; i++) {
-            r += tableHeader[i] + " : " + lastUpdate[i] + "\n";
+            r += tableHeader[i] + " : \n" + lastUpdate[i] + "\n";
         }
         return r;
     }
@@ -272,10 +308,38 @@ public class StockInfoPanel extends javax.swing.JPanel {
         this.name = name;
         this.desc = desc;
         defineTableData(data,header);
+        updateTableView();
         lUpdtText.setText(generateLabels());
         jLabel1.setText(name);
         lUpdtText1.setText(desc);
         this.repaint();
+    }
+    
+    public void update(String[][] data, String name, String desc){
+        this.name = name;
+        this.desc = desc;
+        defineTableData(data,this.tableHeader);
+        updateTableView();
+        lUpdtText.setText(generateLabels());
+        jLabel1.setText(name);
+        lUpdtText1.setText(desc);
+        this.repaint();
+    }
+    private void updateTableView(){
+        infoTable.setModel(new javax.swing.table.DefaultTableModel(tableData,tableHeader){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }});
+    }
+    void addChart(Map<String,String> stock){
+            //chart = new StockPanel();
+            TimeSeries series = timeSeriesFromStock(stock, this.name);
+            chart.getSeriesCollection().removeAllSeries();
+            chart.getSeriesCollection().addSeries(series);
+            graphicsPanel.add(chart);
+            graphicsPanel.repaint();
     }
     
     

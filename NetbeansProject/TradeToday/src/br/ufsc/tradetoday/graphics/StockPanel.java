@@ -19,6 +19,7 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.Day;
 
 import br.ufsc.tradetoday.backend.AlphaVantageAPI;
+import java.awt.Dimension;
 
 
 public class StockPanel extends JPanel {
@@ -31,7 +32,7 @@ public class StockPanel extends JPanel {
      * @param name -- TimeSeries' name.
      * @return generated TimeSeries.
      */
-    private static TimeSeries timeSeriesFromStock(final Map<String, String> stock, final String name) {
+    static TimeSeries timeSeriesFromStock(final Map<String, String> stock, final String name) {
         TimeSeries series = new TimeSeries(name);
 
         for (String stamp : stock.keySet()) {
@@ -69,6 +70,27 @@ public class StockPanel extends JPanel {
 		this.add(chartPanel);
     }
     
+    public StockPanel(Dimension dimension) {
+    	super();
+    	
+    	displayData = new TimeSeriesCollection();
+    	
+		JFreeChart chart = ChartFactory.createTimeSeriesChart(
+			null, "Data", "Preço (USD)",
+			displayData
+			,true, false, false
+		);
+		
+		//ChartPanel chartPanel = new ChartPanel(chart);
+                ChartPanel panel = new ChartPanel(chart, dimension.width, 
+                        dimension.height,
+                        dimension.width,dimension.height,
+                        dimension.width,dimension.height,true, true, true, true, true, true);
+		this.add(panel);
+        //this.setSize(dimension);
+        //chartPanel.setSize(dimension);
+    }
+    
     
     public TimeSeriesCollection getSeriesCollection() {
     	return displayData;
@@ -81,7 +103,7 @@ public class StockPanel extends JPanel {
      * @param args -- stock symbols to display, Bitcoin price is shown when empty.
      */
     public static void main(String[] args) {
-        StockPanel chart = new StockPanel();
+        StockPanel chart = new StockPanel(new Dimension(200,200));
         
         JFrame window = new JFrame("Testing StockPanel");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

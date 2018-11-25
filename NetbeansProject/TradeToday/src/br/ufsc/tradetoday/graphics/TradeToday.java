@@ -324,7 +324,6 @@ public class TradeToday extends javax.swing.JFrame {
         alertButton.setSelected(false);
         String selectedValue = jList1.getSelectedValue();
         if(selectedValue != null && !selectedValue.isEmpty()){
-            String[] dheader =  {"Date","Value"};
             Map<String,String> mapData;
             System.out.print("Trying to reach data...");
             int c = 0;
@@ -354,9 +353,10 @@ public class TradeToday extends javax.swing.JFrame {
             System.out.println("Done!");
             String[][] data = convertMapToString(mapData);
             stockInfoPanel1.setVisible(false);
-            stockInfoPanel1.update(data, dheader,
+            stockInfoPanel1.update(data,
                     ListHandler.getNameOf(selectedValue), 
                     ListHandler.getDescOf(selectedValue));
+            stockInfoPanel1.addChart(mapData);
             stockInfoPanel1.repaint();
             stockInfoPanel1.setVisible(true);
             stockInfoPanel1.setEnabled(true);
@@ -388,10 +388,15 @@ public class TradeToday extends javax.swing.JFrame {
         if (alertButton.isSelected()) {
             analyzePanel1.setVisible(true);
             analyzePanel1.setEnabled(true);
-            //analyzePanel1.startAnalysis();
+            stockInfoPanel1.setVisible(false);
+            stockInfoPanel1.setEnabled(false);
         } else {
             analyzePanel1.setVisible(false);
             analyzePanel1.setEnabled(false);
+            if(jList1.getSelectedIndex() >= 0){
+               stockInfoPanel1.setVisible(true);
+                stockInfoPanel1.setEnabled(true); 
+            }
         }
     }//GEN-LAST:event_alertButtonStateChanged
 
