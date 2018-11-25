@@ -254,6 +254,7 @@ public class StockInfoPanel extends javax.swing.JPanel {
     private void defineTableData(String[][] data,String[] header){
         lastUpdate = data[0];
         tableHeader = header;
+        tableData = new String[data.length - 1][header.length];
         for (int i = 1;i < data.length;i++) {
             tableData[i-1] = data[i];
         }

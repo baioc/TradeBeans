@@ -42,7 +42,7 @@ public class AlphaVantageAPI extends API {
 	 */
 	public AlphaVantageAPI(final String key) {
 		super("https://www.alphavantage.co/query?");
-		if (key != null) {
+		if (key != null && !key.isEmpty()) {
 			this.key = key;
 		}
 	}
@@ -67,7 +67,7 @@ public class AlphaVantageAPI extends API {
 			file = super.get(
 				"function=TIME_SERIES_", timeUnit.toUpperCase(),
 				"&symbol=", symbol.toUpperCase(),
-				"&outputsize=", "full",
+				//"&outputsize=", "full",
 				"&apikey=", this.key,
 				"&datatype=", "json"
 			);
@@ -230,7 +230,7 @@ public class AlphaVantageAPI extends API {
 	public static void main(String[] args) {
 		final AlphaVantageAPI api = new AlphaVantageAPI();
 		
-		String type = "indicator";
+		String type = "stock";
 		if (args.length > 0) {
 			type = args[0].toLowerCase();
 		}

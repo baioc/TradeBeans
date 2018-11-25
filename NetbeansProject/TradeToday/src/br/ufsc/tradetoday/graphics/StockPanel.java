@@ -51,8 +51,6 @@ public class StockPanel extends JPanel {
     }
     
     
-<<<<<<< HEAD
-=======
     private TimeSeriesCollection displayData;
     
     public StockPanel() {
@@ -75,7 +73,7 @@ public class StockPanel extends JPanel {
     public TimeSeriesCollection getSeriesCollection() {
     	return displayData;
     }
->>>>>>> 67403c05eb7bb067d1745cbd815909d1d5a0fe84
+
 
 
     /**

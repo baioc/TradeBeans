@@ -3,8 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/home/enzo/Desktop/Git/POO2_Project/NetbeansProject/TradeToday/src/br/ufsc/tradetoday/graphics/AnalyzePanel.java</file>
             <file>file:/home/enzo/Desktop/Git/POO2_Project/NetbeansProject/TradeToday/src/br/ufsc/tradetoday/graphics/StockPanel.java</file>
             <file>file:/home/enzo/Desktop/Git/POO2_Project/NetbeansProject/TradeToday/src/br/ufsc/tradetoday/graphics/StockInfoPanel.java</file>
+            <file>file:/home/enzo/Desktop/Git/POO2_Project/NetbeansProject/TradeToday/src/br/ufsc/tradetoday/graphics/TradeToday.java</file>
+            <file>file:/home/enzo/Desktop/Git/POO2_Project/NetbeansProject/TradeToday/src/br/ufsc/tradetoday/backend/AlphaVantageAPI.java</file>
+            <file>file:/home/enzo/Desktop/Git/POO2_Project/NetbeansProject/TradeToday/src/br/ufsc/tradetoday/config/ListHandler.java</file>
         </group>
     </open-files>
 </project-private>

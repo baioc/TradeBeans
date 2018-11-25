@@ -8,7 +8,13 @@ package br.ufsc.tradetoday.graphics;
 import br.ufsc.tradetoday.backend.AlphaVantageAPI;
 import br.ufsc.tradetoday.config.ConfigHandler;
 import br.ufsc.tradetoday.config.ListHandler;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sun.security.krb5.Config;
 
 /**
@@ -21,7 +27,7 @@ public class TradeToday extends javax.swing.JFrame {
      * Creates new form TradeTodat
      */
     public TradeToday() {
-        ava = new AlphaVantageAPI(ConfigHandler.getConfig().getCustomKey());
+        ava = new AlphaVantageAPI();
         initComponents();
         /* Puts this object invisible in init */
         menuPanel.setVisible(false);
@@ -317,34 +323,63 @@ public class TradeToday extends javax.swing.JFrame {
         // :: TODO :: CALLS GRAPHICAL MENU UPDATE
         alertButton.setSelected(false);
         String selectedValue = jList1.getSelectedValue();
-        String[][] ddata = {         {"25/07/2000","0.27","0.29","+0.51"},
-                                    {"24/07/2000","0.13","0.27","+0.01"},
-                                    {"23/07/2010","0.25","0.25","+0.00"},
-                                    {"24/07/2000","54","0.00","+0.00"}};
-        String[] dheader =  {"Date","Value"};
-        Map<String,String> mapData = typeMenu.getText().equals
-        (ListHandler.TYPE_STOCK)? 
-            ava.getStock(selectedValue, 
-                    ConfigHandler.getConfig().getRefreshRate()) :
-            ava.getCrypto(selectedValue,
-                    ConfigHandler.getConfig().getRefreshRate());
-        String[][] data = convertMapToString(mapData);
-        stockInfoPanel1.setVisible(false);
-        stockInfoPanel1.update(data, dheader,
-                ListHandler.getNameOf(selectedValue), 
-                ListHandler.getDescOf(selectedValue));
-        stockInfoPanel1.repaint();
-        stockInfoPanel1.setVisible(true);
-        stockInfoPanel1.setEnabled(true);
+        if(selectedValue != null && !selectedValue.isEmpty()){
+            String[] dheader =  {"Date","Value"};
+            Map<String,String> mapData;
+            System.out.print("Trying to reach data...");
+            int c = 0;
+            do{
+                if(selectedValue.equals(ListHandler.TYPE_STOCK)){
+                    mapData = ava.getStock(selectedValue,
+                            ConfigHandler.getConfig().getRefreshRate());
+                }else{
+                    mapData = ava.getCrypto(selectedValue, 
+                            ConfigHandler.getConfig().getRefreshRate());
+                }
+                if(mapData != null){
+                    break;
+                }
+                System.out.print(".");
+                c++;
+                if(c % 20 == 0){
+                    System.out.println("");
+                }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TradeToday.class.getName()).log(Level.SEVERE, null, ex);
+                    this.notify();
+                }
+            }while(mapData == null);
+            System.out.println("Done!");
+            String[][] data = convertMapToString(mapData);
+            stockInfoPanel1.setVisible(false);
+            stockInfoPanel1.update(data, dheader,
+                    ListHandler.getNameOf(selectedValue), 
+                    ListHandler.getDescOf(selectedValue));
+            stockInfoPanel1.repaint();
+            stockInfoPanel1.setVisible(true);
+            stockInfoPanel1.setEnabled(true);
+        }
     }//GEN-LAST:event_jList1ValueChanged
 
     private String[][] convertMapToString(Map<String,String> memoMap){
-        String[][] data = new String[memoMap.size()][];
-        int ii =0;
-        for(Map.Entry<String,String> entry : memoMap.entrySet()){
-            data[ii++] = new String[] { entry.getKey(), entry.getValue() };
+        HashMap map = (HashMap) memoMap;
+        String[][] arr = new String[map.size()][2];
+        Set entries = map.entrySet();
+        Iterator entriesIterator = entries.iterator();
+
+        int i = 0;
+        while(entriesIterator.hasNext()){
+
+            Map.Entry mapping = (Map.Entry) entriesIterator.next();
+
+            arr[i][0] = (String) mapping.getKey();
+            arr[i][1] = (String) mapping.getValue();
+
+            i++;
         }
-        return data;
+        return arr;
     }
     
     private void alertButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_alertButtonStateChanged
