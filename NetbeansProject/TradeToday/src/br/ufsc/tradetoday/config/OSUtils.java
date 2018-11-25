@@ -15,9 +15,7 @@ public class OSUtils {
     
     
     public static String getOsRealName() {
-        if (realOS == null) {
-        	realOS = System.getProperty("os.name");
-        }
+        if (realOS == null) realOS = System.getProperty("os.name");
         return realOS;
     }
     

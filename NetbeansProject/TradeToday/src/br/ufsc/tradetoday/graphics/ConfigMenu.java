@@ -76,13 +76,14 @@ public class ConfigMenu extends javax.swing.JFrame {
         customKey.setOpaque(true);
 
         rrComBox.setModel(new javax.swing.DefaultComboBoxModel<>(Config.getRefreshTimes()));
-        rrComBox.setSelectedIndex(rrComBox.getSelectedIndex());
+        rrComBox.setSelectedItem(ConfigHandler.getConfig().getRefreshRate());
 
         raComBox.setModel(new javax.swing.DefaultComboBoxModel<>(Config.getRankingAlgorithms()));
-        raComBox.setSelectedIndex(raComBox.getSelectedIndex());
+        raComBox.setSelectedItem(ConfigHandler.getConfig().getRankingAlgorithm());
 
         ckTextField.setColumns(16);
         ckTextField.setDocument(new JTextFieldLimit(16));
+        ckTextField.setText(ConfigHandler.getConfig().getCustomKey());
 
         applyBtn.setText("Apply");
         applyBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -158,11 +159,10 @@ public class ConfigMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void applyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyBtnActionPerformed
-        // TODO add your handling code here:
         String rr = Config.getRefreshTimes()[rrComBox.getSelectedIndex()];
         String ra = Config.getRankingAlgorithms()[raComBox.getSelectedIndex()];
         String ck = ckTextField.getText();
-        if (ck.length() < 16 && ck.length() != 0) {
+        if (ck.length() == 0) {
             setAlwaysOnTop(false);
             JOptionPane.showMessageDialog(null, "Invalid Custom Key!", "Error", JOptionPane.ERROR_MESSAGE);
             setAlwaysOnTop(true);
@@ -175,7 +175,6 @@ public class ConfigMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_applyBtnActionPerformed
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
-        // TODO add your handling code here:
         Config cfg = ConfigHandler.getConfig();
         String ck = cfg.getCustomKey();
         String ra = cfg.getRankingAlgorithm();

@@ -17,11 +17,3 @@ Quesitos a serem avaliados:
   - Utilização de Tecnologias Avançadas
 
 Obs: os integrantes do grupo serão questionados a respeito do trabalho e poderão receber notas distintas.
-
-
-### **Java ClassPath Setup**
-
-```
-$ export PROJECT=`pwd`
-$ export CLASSPATH=.:$PROJECT/NetbeansProject/TradeToday/extLibs/gson-2.8.5/gson-2.8.5.jar:$PROJECT/NetbeansProject/TradeToday/extLibs/jfreechart-1.6.0/jfreechart-1.6.0-snapshot.jar:$PROJECT/NetbeansProject/TradeToday/extLibs/commons-csv-1.6/commons-csv-1.6.jar
-```

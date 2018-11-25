@@ -23,7 +23,7 @@ public class GoogleDocsAPI extends API {
 	 * @param args -- first element should be a valid request parameter, if empty the default one is used.
 	 */
 	public static void main(String[] args) {
-		API api = new GoogleDocsAPI();
+		final API api = new GoogleDocsAPI();
 		StringBuilder response = new StringBuilder();
 
 		String fileID = null;
@@ -33,6 +33,7 @@ public class GoogleDocsAPI extends API {
 			fileID = args[0];
 		}
 
+		System.err.println("GetGoogleDocsFile() Requesting public document...");
 		try (BufferedReader file = api.get(fileID)) {
 			String line;
 			while ((line = file.readLine()) != null) {
@@ -45,7 +46,8 @@ public class GoogleDocsAPI extends API {
 			e.printStackTrace();
 		}
 
-		System.out.println(response.toString()); // write file to stdout
+		System.err.println("OnGotResponse() Writing to stdout:");
+		System.out.println(response.toString());
 	}
 
 }

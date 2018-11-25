@@ -6,12 +6,13 @@
 package br.ufsc.tradetoday.config;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -26,7 +27,7 @@ import org.apache.commons.csv.CSVPrinter;
 public class ListHandler {
     public final static String TYPE_CRYPTO = "CRYPTO";
     public final static String TYPE_STOCK = "STOCK";
-    public final static String TYPE_DEFAULT = TYPE_CRYPTO;
+    public final static String TYPE_DEFAULT = TYPE_STOCK;
     
     private static String[][] list = null;
     private static String selectedType = TYPE_DEFAULT;
@@ -84,16 +85,10 @@ public class ListHandler {
                 list[z] = aList.get(z);
             }
             
-            for (int k = 1; k < list.length; k++) {
-                System.out.printf("Symbol: %s | Type : %s | Name : %s | "
-                		+ "Desc: %s \n",list[k][0],list[k][1],
-                        list[k][2],list[k][3]);
-            }
-            
             p.close();
             
         } catch(IOException e) {
-            System.err.println(e.getMessage());
+        	e.printStackTrace();
         }
     }
     
@@ -102,10 +97,9 @@ public class ListHandler {
             updateList();
         }
         
-        ArrayList<String> symbols = new ArrayList<String>();
+        List<String> symbols = new ArrayList<>();
         
         for (int i = 1; i < list.length; i++) {
-            System.out.println(list[i][0] + " | " + list[i][1]);
             if (list[i][1].equals(TYPE_CRYPTO)) {
                 symbols.add(list[i][0]);
             }
@@ -131,10 +125,10 @@ public class ListHandler {
             updateList();
         }
         
-        ArrayList<String> symbols = new ArrayList<String>();
+        List<String> symbols = new ArrayList<>();
         for (int i = 1; i < list.length; i++) {
             if (list[i][1].equals(TYPE_STOCK)) {
-                symbols.add(list[i][0]);   
+                symbols.add(list[i][0]);
             }
         }
         
@@ -159,7 +153,7 @@ public class ListHandler {
     }
     
     private static void createList(java.nio.file.Path pathToWrite) {
-        GoogleDocsAPI gdoc = new GoogleDocsAPI();
+        final GoogleDocsAPI gdoc = new GoogleDocsAPI();
         
         try {
         	new File(pathToWrite.getParent().toString()).mkdirs();	// creates directory if it doesn't yet exist
@@ -181,8 +175,8 @@ public class ListHandler {
     }
     
     public static String getDescOf(String stockSymbol){
-        for(int i = 0;i < list.length;i++){
-            if(list[i][0].equals(stockSymbol)){
+        for (int i = 0; i < list.length; i++) {
+            if (list[i][0].equals(stockSymbol)) {
                 return list[i][3];
             }
         }
@@ -190,24 +184,27 @@ public class ListHandler {
     }    
     
     public static String getNameOf(String stockSymbol){
-        for(int i = 0;i < list.length;i++){
-            if(list[i][0].equals(stockSymbol)){
+        for (int i = 0; i < list.length; i++) {
+            if (list[i][0].equals(stockSymbol)) {
                 return list[i][2];
             }
         }
         return null;
     }   
     
-    public static void main(String[] args) throws FileNotFoundException {
+    
+    public static void main(String[] args) {
         String[] c = getSymbolsCrypto();
+        System.out.print("\nOnCryptoSymbolsAcquired()");
+        System.out.println("\n-----------");
         for (String l : c) {
             System.out.println(l);
             System.out.println("-----------");
-            
         }
         
         String[] s = getSymbolsStock();
-        System.out.println("  NEW  ");
+        System.out.print("\nOnStockSymbolsAcquired()");
+        System.out.println("\n===========");
         for (String l : s) {
             System.out.println(l);
             System.out.println("===========");

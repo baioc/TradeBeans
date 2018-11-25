@@ -20,30 +20,23 @@ public class Config {
 	
     // Static default values
     public static final String DEFAULT_REFRESH_RATE = AlphaVantageAPI.TIME_DAILY;
-    public static final String DEFAULT_RANKING_ALGORITHM = AlphaVantageAPI.INDICATOR_AVERAGE_SIMPLE;
+    public static final String DEFAULT_RANKING_ALGORITHM = AlphaVantageAPI.INDICATOR_OSC_BOLLINGER;
     public static final String DEFAULT_CUSTOM_KEY = "demo";
-    public static final String REFRESH_DAILY = AlphaVantageAPI.TIME_DAILY;
-    public static final String REFRESH_WEEKLY = AlphaVantageAPI.TIME_WEEKLY;
-    public static final String REFRESH_MONTHLY = AlphaVantageAPI.TIME_MONTHLY;
-    public static final String RANKING_AVERAGE = AlphaVantageAPI.INDICATOR_AVERAGE_SIMPLE;
-    public static final String RANKING_BOLLINGER = AlphaVantageAPI.INDICATOR_OSC_BOLLINGER;
     
     
     // Headers on CSV File | Configurations
-    private String refreshRate;
-    private String rankingAlgorithm;
-    private String customKey;
+    private String refreshRate = DEFAULT_REFRESH_RATE;
+    private String rankingAlgorithm = DEFAULT_RANKING_ALGORITHM;
+    private String customKey = DEFAULT_CUSTOM_KEY;
     
     
     Config() {} // only for instancing on ConfigHandler
     
-    Config(String refreshRate,String rankingAlgorithm,String customKey) {
-        this.refreshRate = refreshRate;
-        this.rankingAlgorithm = rankingAlgorithm;
-        this.customKey = customKey;
+    Config(String refreshRate, String rankingAlgorithm, String customKey) {
+        update(refreshRate, rankingAlgorithm, customKey);
     }
     
-    void update(String refreshRate,String rankingAlgorithm,String customKey) {
+    void update(String refreshRate, String rankingAlgorithm, String customKey) {
         this.refreshRate = refreshRate;
         this.rankingAlgorithm = rankingAlgorithm;
         this.customKey = customKey;
@@ -62,12 +55,19 @@ public class Config {
     }
     
     public static String[] getRefreshTimes() {
-       String[] r = {REFRESH_DAILY,REFRESH_MONTHLY,REFRESH_WEEKLY};
+       String[] r = {
+    	   AlphaVantageAPI.TIME_DAILY,
+    	   AlphaVantageAPI.TIME_WEEKLY,
+    	   AlphaVantageAPI.TIME_MONTHLY,
+       };
        return r;
     }
     
     public static String[] getRankingAlgorithms() {
-        String[] r = {RANKING_AVERAGE,RANKING_BOLLINGER};
+        String[] r = {
+        	AlphaVantageAPI.INDICATOR_OSC_BOLLINGER,
+        	// TODO other oscillators
+        };
         return r;
     }
      

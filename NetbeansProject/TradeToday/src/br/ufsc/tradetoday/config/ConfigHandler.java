@@ -80,8 +80,7 @@ public class ConfigHandler {
             p.close();
             
         } catch(IOException e) {
-            System.err.println("Can't create file");
-            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
     
@@ -108,7 +107,7 @@ public class ConfigHandler {
             
         } catch (IOException ex) {
             Logger.getLogger(ConfigHandler.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
     
@@ -126,7 +125,7 @@ public class ConfigHandler {
             p.close();
             
         } catch(IOException e) {
-            System.err.println(e.getMessage());
+        	e.printStackTrace();
         }
         
         updateConfigFile();
@@ -142,6 +141,23 @@ public class ConfigHandler {
     
     public static void setCustomKey(String customKey) {
         writeOnConfigFile(cfg.getRefreshRate(), cfg.getRankingAlgorithm(), customKey);
+    }
+    
+    
+    /**
+     * Tester
+     * @param args -- ignored.
+     */
+    public static void main(String[] args) {
+        Config c = ConfigHandler.getConfig();
+        System.out.printf(
+        	"Taxa de Atualização : %s\n" +
+            "Algoritmo de Ranking : %s\n" +
+            "Key Customizada : %s",
+            c.getRefreshRate(),
+            c.getRankingAlgorithm(),
+            c.getCustomKey()
+        );
     }
     
 }

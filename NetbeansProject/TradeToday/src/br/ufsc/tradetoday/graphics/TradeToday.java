@@ -8,14 +8,11 @@ package br.ufsc.tradetoday.graphics;
 import br.ufsc.tradetoday.backend.AlphaVantageAPI;
 import br.ufsc.tradetoday.config.ConfigHandler;
 import br.ufsc.tradetoday.config.ListHandler;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.security.krb5.Config;
 
 /**
  *
@@ -27,8 +24,8 @@ public class TradeToday extends javax.swing.JFrame {
      * Creates new form TradeTodat
      */
     public TradeToday() {
-        ava = new AlphaVantageAPI();
         initComponents();
+        ava = new AlphaVantageAPI(ConfigHandler.getConfig().getCustomKey());
         /* Puts this object invisible in init */
         menuPanel.setVisible(false);
         menuPanel.setEnabled(false);
@@ -259,7 +256,7 @@ public class TradeToday extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuPanelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuPanelMouseEntered
-        openMenu(evt);    
+        openMenu(evt);
     }//GEN-LAST:event_menuPanelMouseEntered
 
     private void menuPanelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuPanelMouseExited
@@ -285,7 +282,6 @@ public class TradeToday extends javax.swing.JFrame {
     }//GEN-LAST:event_menuButtonMouseEntered
 
     private void typeMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeMenuActionPerformed
-        // TODO add your handling code here:
         ListHandler.changeSelectedType();
         typeMenu.setText(ListHandler.getSelectedType());
         updateSymbolsList();
@@ -294,19 +290,16 @@ public class TradeToday extends javax.swing.JFrame {
     private void updateSymbolsList(){
         jList1.setModel(new javax.swing.DefaultComboBoxModel<>(ListHandler.getSymbols()));
     }
-    
+
     private void button1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button1MouseEntered
-        // TODO add your handling code here:
-        openMenu(evt);
+       openMenu(evt);
     }//GEN-LAST:event_button1MouseEntered
 
     private void button2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button2MouseEntered
-        // TODO add your handling code here:
         openMenu(evt);
     }//GEN-LAST:event_button2MouseEntered
 
     private void openConfigMenu(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openConfigMenu
-        // TODO add your handling code here:
         if (cfgMenu == null) {
             cfgMenu = new ConfigMenu();
             cfgMenu.setVisible(true);
@@ -319,43 +312,46 @@ public class TradeToday extends javax.swing.JFrame {
     }//GEN-LAST:event_openConfigMenu
 
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
-        // TODO add your handling code here:
-        // :: TODO :: CALLS GRAPHICAL MENU UPDATE
+    	if (evt.getValueIsAdjusting()) return;	// evita chamar duas vezes para um mesmo click
         alertButton.setSelected(false);
         String selectedValue = jList1.getSelectedValue();
-        if(selectedValue != null && !selectedValue.isEmpty()){
-            Map<String,String> mapData;
-            System.out.print("Trying to reach data...");
+        
+        if (selectedValue != null && !selectedValue.isEmpty()) {
+            Map<String,String> mapData = null;
+            final int TRY_LIMIT = 400;
             int c = 0;
-            do{
-                if(selectedValue.equals(ListHandler.TYPE_STOCK)){
-                    mapData = ava.getStock(selectedValue,
-                            ConfigHandler.getConfig().getRefreshRate());
-                }else{
-                    mapData = ava.getCrypto(selectedValue, 
-                            ConfigHandler.getConfig().getRefreshRate());
+            
+            System.out.print("Trying to reach data...");
+            do {
+                if (ListHandler.getSelectedType().equals(ListHandler.TYPE_STOCK)) {
+                    mapData = ava.getStock(selectedValue, ConfigHandler.getConfig().getRefreshRate());
+                } else {
+                    mapData = ava.getCrypto(selectedValue, ConfigHandler.getConfig().getRefreshRate());
                 }
-                if(mapData != null){
-                    break;
-                }
+                if (mapData != null) break;
+
                 System.out.print(".");
-                c++;
-                if(c % 20 == 0){
-                    System.out.println("");
+                if (++c % 50 == 0) {
+                	System.out.println();
+                	if (c >= TRY_LIMIT) {
+                		System.out.printf("OnRequestTimeout() Gave up after trying %d times.\n", c);
+                		return;
+                	}
                 }
+                
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(TradeToday.class.getName()).log(Level.SEVERE, null, ex);
                     this.notify();
                 }
-            }while(mapData == null);
+
+            } while(mapData == null);
+
             System.out.println("Done!");
             String[][] data = convertMapToString(mapData);
             stockInfoPanel1.setVisible(false);
-            stockInfoPanel1.update(data,
-                    ListHandler.getNameOf(selectedValue), 
-                    ListHandler.getDescOf(selectedValue));
+            stockInfoPanel1.update(data, ListHandler.getNameOf(selectedValue),  ListHandler.getDescOf(selectedValue));
             stockInfoPanel1.addChart(mapData);
             stockInfoPanel1.repaint();
             stockInfoPanel1.setVisible(true);
@@ -364,27 +360,23 @@ public class TradeToday extends javax.swing.JFrame {
     }//GEN-LAST:event_jList1ValueChanged
 
     private String[][] convertMapToString(Map<String,String> memoMap){
-        HashMap map = (HashMap) memoMap;
-        String[][] arr = new String[map.size()][2];
-        Set entries = map.entrySet();
-        Iterator entriesIterator = entries.iterator();
+        String[][] arr = new String[memoMap.size()][2];
+        Iterator<Entry<String, String>> entriesIterator = memoMap.entrySet().iterator();
 
         int i = 0;
-        while(entriesIterator.hasNext()){
+        while (entriesIterator.hasNext()) {
+            Entry<String, String> mapping = entriesIterator.next();
 
-            Map.Entry mapping = (Map.Entry) entriesIterator.next();
-
-            arr[i][0] = (String) mapping.getKey();
-            arr[i][1] = (String) mapping.getValue();
+            arr[i][0] = mapping.getKey();
+            arr[i][1] = mapping.getValue();
 
             i++;
         }
+
         return arr;
     }
-    
+
     private void alertButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_alertButtonStateChanged
-        // TODO add your handling code here:
-        // TODO OPEN ANALIZE PANEL
         if (alertButton.isSelected()) {
             analyzePanel1.setVisible(true);
             analyzePanel1.setEnabled(true);
@@ -393,31 +385,30 @@ public class TradeToday extends javax.swing.JFrame {
         } else {
             analyzePanel1.setVisible(false);
             analyzePanel1.setEnabled(false);
-            if(jList1.getSelectedIndex() >= 0){
+            if (jList1.getSelectedIndex() >= 0) {
                stockInfoPanel1.setVisible(true);
-                stockInfoPanel1.setEnabled(true); 
+                stockInfoPanel1.setEnabled(true);
             }
         }
     }//GEN-LAST:event_alertButtonStateChanged
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
-    
+
     private void openMenu(java.awt.event.MouseEvent evt) {
         menuPanel.setVisible(true);
         menuPanel.setEnabled(true);
         menuOpened = true;
     }
-    
+
     private void closeMenu(java.awt.event.MouseEvent evt) {
         menuPanel.setVisible(false);
         menuPanel.setEnabled(false);
         menuOpened = false;
     }
-    
-    
+
+
     /**
      * @param args the command line arguments
      */
@@ -425,7 +416,7 @@ public class TradeToday extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -450,7 +441,6 @@ public class TradeToday extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new TradeToday().setVisible(true);
-                ConfigHandler.getConfig();
             }
         });
     }
@@ -470,7 +460,6 @@ public class TradeToday extends javax.swing.JFrame {
     /* Defines custom variable for menu*/
     private boolean menuOpened = false;
     private boolean inMenuBtn = false;
-    private boolean inMenuPnl = false;
     /*==================================*/
     private javax.swing.JPanel menuPanel;
     private br.ufsc.tradetoday.graphics.StockInfoPanel stockInfoPanel1;

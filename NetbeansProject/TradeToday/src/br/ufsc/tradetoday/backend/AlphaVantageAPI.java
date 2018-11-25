@@ -22,12 +22,10 @@ public class AlphaVantageAPI extends API {
 	public static final String TIME_DAILY = "Daily";
 	public static final String TIME_WEEKLY = "Weekly";
 	public static final String TIME_MONTHLY = "Monthly";
-	public static final String INDICATOR_AVERAGE_SIMPLE = "SMA";
-	public static final String INDICATOR_AVERAGE_EXP = "EMA";
 	public static final String INDICATOR_OSC_BOLLINGER = "BBANDS";
-	public static final String INDICATOR_OSC_MACD = "MACD";
-	public static final String INDICATOR_OSC_CHAIKIN = "ADOSC";
-	public static final String INDICATOR_OSC_STOCHASTIC = "STOCH";
+	// TODO other oscillators
+	public static final String SIZE_FULL = "full";
+	public static final String SIZE_COMPACT = "compact";
 
 
 	private static final Gson GSON = new Gson();
@@ -58,16 +56,17 @@ public class AlphaVantageAPI extends API {
 	 * Requests some stock information.
 	 * @param symbol -- stock symbol. eg: "MSFT" for Microsoft.
 	 * @param timeUnit -- time scale: "Daily", "Weekly" or "Monthly".
+	 * @param size -- output size: "full" for all the available data and "compact" for the last 100 points.
 	 * @return A map with date stamps as keys to the respective stock value, null on fail.
 	 */
-	public Map<String, String> getStock(final String symbol, final String timeUnit) {
+	public Map<String, String> getStock(final String symbol, final String timeUnit, final String size) {
 		BufferedReader file = null;
 		String json = null;
 		try {
 			file = super.get(
 				"function=TIME_SERIES_", timeUnit.toUpperCase(),
 				"&symbol=", symbol.toUpperCase(),
-				"&outputsize=", "full",
+				"&outputsize=", size.toLowerCase(),
 				"&apikey=", this.key,
 				"&datatype=", "json"
 			);
@@ -94,7 +93,7 @@ public class AlphaVantageAPI extends API {
 
 		final Map<String, Map<String, String>> parsedData = parseJson(json, dataKey);
 		if (parsedData == null) return null;
-		
+
 		Map<String, String> data = new LinkedHashMap<>(parsedData.size());
 
 		for (String dateStamp : parsedData.keySet()) {
@@ -106,6 +105,16 @@ public class AlphaVantageAPI extends API {
 		}
 
 		return data;
+	}
+
+	/**
+	 * Requests some stock information.
+	 * @param symbol -- stock symbol. eg: "MSFT" for Microsoft.
+	 * @param timeUnit -- time scale: "Daily", "Weekly" or "Monthly".
+	 * @return A map with date stamps as keys to the respective stock value, null on fail.
+	 */
+	public Map<String, String> getStock(final String symbol, final String timeUnit) {
+		return getStock(symbol, timeUnit, SIZE_COMPACT);
 	}
 
 	/**
@@ -131,7 +140,7 @@ public class AlphaVantageAPI extends API {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new IllegalArgumentException(e);
+			return null;
 		}
 
 		String dataKey = null;
@@ -145,14 +154,12 @@ public class AlphaVantageAPI extends API {
 
 		final Map<String, Map<String, String>> parsedData = parseJson(json, dataKey);
 		if (parsedData == null) return null;
-		
+
 		Map<String, String> data = new LinkedHashMap<>(parsedData.size());
 
 		for (String dateStamp : parsedData.keySet()) {
 			String value = parsedData.get(dateStamp).get("4b. close (USD)");
-			if (value == null) {
-				return null;
-			}
+			if (value == null) return null;
 			data.put(dateStamp, value);
 		}
 
@@ -194,6 +201,17 @@ public class AlphaVantageAPI extends API {
 		return parseJson(json, dataKey);
 	}
 
+	/**
+	 * Requests a technical indicator calculated over a certain period for a specific symbol.
+	 * @param symbol -- stock symbol. eg: "MSFT" for Microsoft.
+	 * @param timeUnit -- time scale: "Daily", "Weekly" or "Monthly".
+	 * @param indicator -- function to calculate for. eg: "SMA" for Simple Moving Average.
+	 * @return A map with date stamps as keys to the respective indicator object-value (Map<String, String>), null on fail.
+	 */
+	public Map<String, Map<String, String>> getIndicator(final String symbol, final String timeUnit, final String indicator) {
+		return getIndicator(symbol, timeUnit, indicator, 20);
+	}
+
 
 	/**
 	 * @param file -- a BufferedReader with the file's contents.
@@ -229,7 +247,7 @@ public class AlphaVantageAPI extends API {
 	 */
 	public static void main(String[] args) {
 		final AlphaVantageAPI api = new AlphaVantageAPI();
-		
+
 		String type = "stock";
 		if (args.length > 0) {
 			type = args[0].toLowerCase();
@@ -238,13 +256,15 @@ public class AlphaVantageAPI extends API {
 		Map<String, String> data = null;
 		switch (type) {
 			case "stock":
-				data = api.getStock("MSFT", AlphaVantageAPI.TIME_MONTHLY);
+				System.err.println("GetStock() Fetching data from Alpha Vantage...");
+				data = api.getStock("MSFT", AlphaVantageAPI.TIME_MONTHLY, AlphaVantageAPI.SIZE_FULL);
 				data.entrySet()
 					.stream()
 					.forEach(System.out::println);
 				break;
 
 			case "crypto":
+				System.err.println("GetCrypto() Fetching raw BTC data from Alpha Vantage...");
 				data = api.getCrypto("BTC", AlphaVantageAPI.TIME_WEEKLY);
 				data.entrySet()
 					.stream()
@@ -252,9 +272,10 @@ public class AlphaVantageAPI extends API {
 				break;
 
 			case "indicator":
+                System.err.println("GetIndicator() Fetching indicator data from Alpha Vantage...");
 				Map<String, Map<String, String>> indicator = api.getIndicator(
 					"GOOGL", AlphaVantageAPI.TIME_DAILY,
-					AlphaVantageAPI.INDICATOR_AVERAGE_SIMPLE, 30
+					AlphaVantageAPI.INDICATOR_OSC_BOLLINGER
 				);
 				for (String dateStamp : indicator.keySet()) {
 					Map<String, String> valueMap = indicator.get(dateStamp);

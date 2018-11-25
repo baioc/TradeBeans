@@ -5,6 +5,15 @@
  */
 package br.ufsc.tradetoday.graphics;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import br.ufsc.tradetoday.backend.AlphaVantageAPI;
+import br.ufsc.tradetoday.config.ConfigHandler;
+import br.ufsc.tradetoday.config.ListHandler;
+
 /**
  *
  * @author 18100527
@@ -16,6 +25,7 @@ public class AnalyzePanel extends javax.swing.JPanel {
      */
     public AnalyzePanel() {
         initComponents();
+        api = new AlphaVantageAPI(ConfigHandler.getConfig().getCustomKey());
     }
 
     /**
@@ -105,12 +115,81 @@ public class AnalyzePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        // TODO : ANALYZE FUNC
-        //String[] buy  = 
-        //String[] sell =  
-        //listaCompra.setModel(new javax.swing.DefaultComboBoxModel<>(buy) );
-        //listaVenda.setModel(new javax.swing.DefaultComboBoxModel<>(sell) );
+    	final int TRY_LIMIT = 250;
+		int n;
+		
+		if (ListHandler.getSelectedType() != ListHandler.TYPE_STOCK) ListHandler.changeSelectedType();	// no api oscillator data for cryptocurrencies
+		final String[] symbols = ListHandler.getSymbols();
+    	
+    	final String oscillator = ConfigHandler.getConfig().getRankingAlgorithm();
+    	String upperKey = null, lowerKey = null;
+    	switch (oscillator) {
+    		case AlphaVantageAPI.INDICATOR_OSC_BOLLINGER:
+    			upperKey = "Real Upper Band";
+    			lowerKey = "Real Lower Band";
+    			break;
+    		
+    		// TODO other oscillators
+    			
+    		default:
+    			System.err.println("OnAnalyseFail() Tried analysing with an invalid oscillator!");;
+    			return;
+    	}
+    	
+    	List<String> buy = new ArrayList<>(symbols.length);
+    	List<String> sell = new ArrayList<>(symbols.length);
+    	    	
+    	System.out.println("Analyse() Locking application while pulling data from API.");
+    	symbols: for (String symbol : symbols) {
+        	Map<String, String> stock = null;
+        	n = 0;
+            while ((stock = api.getStock(symbol, AlphaVantageAPI.TIME_DAILY)) == null) {
+            	if (++n >= TRY_LIMIT) {
+            		System.out.printf("\tOnRawRequestTimeout() Gave up after trying %d times.\n", n);
+            		continue symbols;
+            	}
+            };
+            
+            Map<String, Map<String, String>> bbands = null;
+            n = 0;
+			while ((bbands = api.getIndicator(symbol, AlphaVantageAPI.TIME_DAILY, oscillator)) == null) {
+				if (++n >= TRY_LIMIT) {
+            		System.out.printf("\tOnIndicatorRequestTimeout() Gave up after trying %d times.\n", n);
+            		continue symbols;
+            	}
+			};
+			
+			double last =	Double.parseDouble( stock.values().iterator().next() );
+			double upper =	Double.parseDouble( bbands.values().iterator().next().get(upperKey) );
+			double lower =	Double.parseDouble( bbands.values().iterator().next().get(lowerKey) );
+			
+			double sbv = ((last - lower) / (upper - lower)) - 0.5;
+			System.out.printf("\tOnResponseReceived() %s shifted_b_value of %f\n", symbol, sbv);
+			if (sbv <= -0.34) {
+				buy.add(Double.toString(sbv) + " " + symbol);	// @note value concatenated to symbol for sorting
+			} else if (sbv >= 0.34) {
+				sell.add(Double.toString(sbv) + " " + symbol);
+			}
+        }
+    	
+    	Collections.sort(buy, Collections.reverseOrder());
+    	String[] buyArray = new String[buy.size()];
+    	for (int i = 0; i < buyArray.length; ++i) {
+    		String uncut = buy.get(i);
+    		buyArray[i] = uncut.substring(uncut.indexOf(" "), uncut.length());	// symbol is extracted from string here
+    	}
+    	
+    	Collections.sort(sell, Collections.reverseOrder());
+    	String[] sellArray = new String[sell.size()];
+    	for (int i = 0; i < sellArray.length; ++i) {
+    		String uncut = sell.get(i);
+    		sellArray[i] = uncut.substring(uncut.indexOf(" "), uncut.length());
+    	}
+    	
+    	System.out.println("OnAnalyseDone() Unlocking application and displaying results.");
+
+        listaCompra.setModel( new javax.swing.DefaultComboBoxModel<String>(buyArray) );
+        listaVenda.setModel( new javax.swing.DefaultComboBoxModel<String>(sellArray) );
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
@@ -123,7 +202,6 @@ public class AnalyzePanel extends javax.swing.JPanel {
     private javax.swing.JList<String> listaVenda;
     private javax.swing.JLabel venda;
     // End of variables declaration//GEN-END:variables
-    
-    
+    private AlphaVantageAPI api;
     
 }

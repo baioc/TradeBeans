@@ -77,25 +77,24 @@ public class StockPanel extends JPanel {
     	
 		JFreeChart chart = ChartFactory.createTimeSeriesChart(
 			null, "Data", "Preço (USD)",
-			displayData
-			,true, false, false
+			displayData,
+			false, false, false
 		);
 		
-		//ChartPanel chartPanel = new ChartPanel(chart);
-                ChartPanel panel = new ChartPanel(chart, dimension.width, 
-                        dimension.height,
-                        dimension.width,dimension.height,
-                        dimension.width,dimension.height,true, true, true, true, true, true);
+        ChartPanel panel = new ChartPanel(
+        	chart,
+        	dimension.width, dimension.height,
+			dimension.width,dimension.height,
+			dimension.width,dimension.height,
+			true, true, true, true, true, true
+        );
+        
 		this.add(panel);
-        //this.setSize(dimension);
-        //chartPanel.setSize(dimension);
     }
-    
     
     public TimeSeriesCollection getSeriesCollection() {
     	return displayData;
     }
-
 
 
     /**
@@ -103,7 +102,7 @@ public class StockPanel extends JPanel {
      * @param args -- stock symbols to display, Bitcoin price is shown when empty.
      */
     public static void main(String[] args) {
-        StockPanel chart = new StockPanel(new Dimension(200,200));
+        StockPanel chart = new StockPanel();
         
         JFrame window = new JFrame("Testing StockPanel");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -112,7 +111,7 @@ public class StockPanel extends JPanel {
 		window.setVisible(true);
 		
 		final AlphaVantageAPI api = new AlphaVantageAPI();
-		final int TRY_LIMIT = 99;
+		final int TRY_LIMIT = 500;
 		int n;
 
         if (args.length < 1) {
@@ -122,7 +121,7 @@ public class StockPanel extends JPanel {
             
             while ((stock = api.getCrypto("BTC", AlphaVantageAPI.TIME_DAILY)) == null) {
             	System.out.printf(".");
-            	if (++n > TRY_LIMIT) {
+            	if (++n >= TRY_LIMIT) {
             		System.out.printf("\nOnGetCryptoFail() Gave up after trying %d times :(\n", n);
             		return;
             	}
@@ -139,24 +138,25 @@ public class StockPanel extends JPanel {
             	Map<String, String> stock = null;
             	n = 0;
             	
-                while ((stock = api.getStock(symbol, AlphaVantageAPI.TIME_DAILY)) == null) {
+                while ((stock = api.getStock(symbol, AlphaVantageAPI.TIME_DAILY, AlphaVantageAPI.SIZE_FULL)) == null) {
                 	System.out.printf(".");
-                	if (++n > TRY_LIMIT) {
+                	if (++n >= TRY_LIMIT) {
                 		System.out.printf("\nOnGetStockFail() Gave up after trying %d times :(\n", n);
                 		continue symbols;
                 	}
                 }
 				
-                System.out.printf("\nGetIndicator() Fetching %s %s oscillator data from Alpha Vantage...", symbol, AlphaVantageAPI.INDICATOR_OSC_BOLLINGER);		
+                System.out.printf(
+                	"\nGetIndicator() Fetching %s %s oscillator data from Alpha Vantage...",
+                	symbol, AlphaVantageAPI.INDICATOR_OSC_BOLLINGER
+                );
                 Map<String, Map<String, String>> bbands = null;
 				n = 0;
 				
-				while ((bbands = api.getIndicator(
-					symbol, AlphaVantageAPI.TIME_DAILY,
-					AlphaVantageAPI.INDICATOR_OSC_BOLLINGER, 20)
-						) == null) {
+				while ((bbands = api.getIndicator(	symbol, AlphaVantageAPI.TIME_DAILY,
+													AlphaVantageAPI.INDICATOR_OSC_BOLLINGER, 20)) == null) {
 					System.out.printf(".");
-                	if (++n > TRY_LIMIT) {
+                	if (++n >= TRY_LIMIT) {
                 		System.out.printf("\nOnGetIndicatorFail() Gave up after trying %d times :(\n", n);
                 		continue symbols;
                 	}
