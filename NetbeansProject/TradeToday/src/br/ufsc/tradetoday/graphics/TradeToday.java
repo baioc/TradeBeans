@@ -338,28 +338,23 @@ public class TradeToday extends javax.swing.JFrame {
             final int TRY_LIMIT = 1;
             int c = 0;
 
-            System.out.print("Trying to reach data...");
+            System.out.print("\nTrying to reach data...");
             do {
                 if (ListHandler.getSelectedType().equals(ListHandler.TYPE_STOCK)) {
                     mapData = ava.getStock(selectedValue, ConfigHandler.getConfig().getRefreshRate());
                 } else {
                     mapData = ava.getCrypto(selectedValue, ConfigHandler.getConfig().getRefreshRate());
                 }
-                if (mapData != null) {
-                    break;
-                }
+                if (mapData != null) break;
 
                 System.out.print(".");
-                if (++c % 50 == 0) {
-                    System.out.println();
-                    if (c >= TRY_LIMIT) {
-                        System.out.printf("OnRequestTimeout() Gave up after trying %d times.\n", c);
-                        JOptionPane.showMessageDialog(null,
-                                "API can't retrieve data.",
-                                "Error!",
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+                if (c >= TRY_LIMIT) {
+                    System.out.printf("\nOnRequestTimeout() Gave up after trying %d times.\n", c);
+                    JOptionPane.showMessageDialog(null,
+                            "API can't retrieve data.",
+                            "Error!",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
 
                 try {
@@ -368,7 +363,6 @@ public class TradeToday extends javax.swing.JFrame {
                     Logger.getLogger(TradeToday.class.getName()).log(Level.SEVERE, null, ex);
                     this.notify();
                 }
-
             } while (mapData == null);
 
             System.out.println("Done!");

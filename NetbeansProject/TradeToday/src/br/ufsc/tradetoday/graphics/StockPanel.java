@@ -111,7 +111,7 @@ public class StockPanel extends JPanel {
 		window.setVisible(true);
 		
 		final AlphaVantageAPI api = new AlphaVantageAPI();
-		final int TRY_LIMIT = 500;
+		final int TRY_LIMIT = 2;
 		int n;
 
         if (args.length < 1) {

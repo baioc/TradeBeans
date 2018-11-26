@@ -145,8 +145,7 @@ public class AnalyzePanel extends javax.swing.JPanel {
         List<String> sell = new ArrayList<>(symbols.length);
 
         System.out.println("Analyse() Locking application while pulling data from API.");
-        symbols:
-        for (String symbol : symbols) {
+        symbols: for (String symbol : symbols) {
             Map<String, String> stock = null;
             n = 0;
             while ((stock = api.getStock(symbol, ConfigHandler.getConfig().getRefreshRate())) == null) {
