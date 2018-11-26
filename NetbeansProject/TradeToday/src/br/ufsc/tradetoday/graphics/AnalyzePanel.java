@@ -13,6 +13,9 @@ import java.util.Map;
 import br.ufsc.tradetoday.backend.AlphaVantageAPI;
 import br.ufsc.tradetoday.config.ConfigHandler;
 import br.ufsc.tradetoday.config.ListHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -115,94 +118,118 @@ public class AnalyzePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    	final int TRY_LIMIT = 250;
-		int n;
-		
-		if (ListHandler.getSelectedType() != ListHandler.TYPE_STOCK) ListHandler.changeSelectedType();	// no api oscillator data for cryptocurrencies
-		final String[] symbols = ListHandler.getSymbols();
-		final String indicator = ConfigHandler.getConfig().getRankingAlgorithm();
-    	
-    	List<String> buy = new ArrayList<>(symbols.length);
-    	List<String> sell = new ArrayList<>(symbols.length);
-    	    	
-    	System.out.println("Analyse() Locking application while pulling data from API.");
-    	symbols: for (String symbol : symbols) {
-        	Map<String, String> stock = null;
-        	n = 0;
+        parallel = new Thread() {
+            public void run() {
+                analyze();
+                try {
+                    this.join();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(AnalyzePanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        parallel.start();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void analyze() {
+        final int TRY_LIMIT = 1;
+        int n;
+
+        if (ListHandler.getSelectedType() != ListHandler.TYPE_STOCK) {
+            ListHandler.changeSelectedType();	// no api oscillator data for cryptocurrencies
+        }
+        final String[] symbols = ListHandler.getSymbols();
+        final String indicator = ConfigHandler.getConfig().getRankingAlgorithm();
+
+        List<String> buy = new ArrayList<>(symbols.length);
+        List<String> sell = new ArrayList<>(symbols.length);
+
+        System.out.println("Analyse() Locking application while pulling data from API.");
+        symbols:
+        for (String symbol : symbols) {
+            Map<String, String> stock = null;
+            n = 0;
             while ((stock = api.getStock(symbol, ConfigHandler.getConfig().getRefreshRate())) == null) {
-            	if (++n >= TRY_LIMIT) {
-            		System.out.printf("\tOnRawRequestTimeout() Gave up on %s after trying %d times.\n", symbol, n);
-            		continue symbols;
-            	}
+                if (++n >= TRY_LIMIT) {
+                    System.out.printf("\tOnRawRequestTimeout() Gave up on %s after trying %d times.\n", symbol, n);
+                    JOptionPane.showMessageDialog(null,
+                            "API can't retrieve data.",
+                            "Error!",
+                            JOptionPane.ERROR_MESSAGE);
+                    continue symbols;
+                }
             };
-            
+
             Map<String, Map<String, String>> osc = null;
             n = 0;
-			while ((osc = api.getIndicator(symbol, ConfigHandler.getConfig().getRefreshRate(), indicator)) == null) {
-				if (++n >= TRY_LIMIT) {
-            		System.out.printf("\tOnIndicatorRequestTimeout() Gave up on %s after trying %d times.\n", symbol, n);
-            		continue symbols;
-            	}
-			};
-			
-			double s_value = calculateSvalue(osc, indicator, stock);
-			System.out.printf("\tOnResponseReceived() %s s_value of %f\n", symbol, s_value);
-			
-			if (s_value <= 25) {
-				buy.add(Double.toString(s_value) + " " + symbol);	// @note value concatenated to symbol for sorting
-			} else if (s_value >= 75) {
-				sell.add(Double.toString(s_value) + " " + symbol);
-			}
+            while ((osc = api.getIndicator(symbol, ConfigHandler.getConfig().getRefreshRate(), indicator)) == null) {
+                if (++n >= TRY_LIMIT) {
+                    System.out.printf("\tOnIndicatorRequestTimeout() Gave up on %s after trying %d times.\n", symbol, n);
+                    JOptionPane.showMessageDialog(null,
+                            "API can't retrieve indicator data.",
+                            "Error!",
+                            JOptionPane.ERROR_MESSAGE);
+                    continue symbols;
+                }
+            };
+
+            double s_value = calculateSvalue(osc, indicator, stock);
+            System.out.printf("\tOnResponseReceived() %s s_value of %f\n", symbol, s_value);
+
+            if (s_value <= 25) {
+                buy.add(Double.toString(s_value) + " " + symbol);	// @note value concatenated to symbol for sorting
+            } else if (s_value >= 75) {
+                sell.add(Double.toString(s_value) + " " + symbol);
+            }
         }
-    	
-    	Collections.sort(buy);
-    	String[] buyArray = new String[buy.size()];
-    	for (int i = 0; i < buyArray.length; ++i) {
-    		String uncut = buy.get(i);
-    		buyArray[i] = uncut.substring(uncut.indexOf(" "), uncut.length());	// symbol is extracted from string here
-    	}
-    	
-    	Collections.sort(sell, Collections.reverseOrder());
-    	String[] sellArray = new String[sell.size()];
-    	for (int i = 0; i < sellArray.length; ++i) {
-    		String uncut = sell.get(i);
-    		sellArray[i] = uncut.substring(uncut.indexOf(" "), uncut.length());
-    	}
-    	
-    	System.out.println("OnAnalyseDone() Unlocking application and displaying results.");
-        listaCompra.setModel( new javax.swing.DefaultComboBoxModel<String>(buyArray) );
-        listaVenda.setModel( new javax.swing.DefaultComboBoxModel<String>(sellArray) );
-    }//GEN-LAST:event_jButton1ActionPerformed
-    
-    
-    private static double calculateSvalue(	Map<String, Map<String, String>> oscillatorData,
-    										String indicator,
-    										Map<String, String> stockData	) {
-    	double s = 0;
-    	
-    	switch (indicator) {
-			case AlphaVantageAPI.INDICATOR_OSC_BOLLINGER:
-				double last =	Double.parseDouble( stockData.values().iterator().next() );
-				double upper =	Double.parseDouble( oscillatorData.values().iterator().next().get("Real Upper Band") );
-				double lower =	Double.parseDouble( oscillatorData.values().iterator().next().get("Real Lower Band") );
-				s = 100 * (last - lower) / (upper - lower);	// %b
-				break;
-			
-			case AlphaVantageAPI.INDICATOR_OSC_ULTIMATE:
-				s = Double.parseDouble( oscillatorData.values().iterator().next().get("ULTOSC") );	// %U
-				break;
-				
-			case AlphaVantageAPI.INDICATOR_OSC_STOCHASTIC:
-				s = Double.parseDouble( oscillatorData.values().iterator().next().get("SlowD") );	// %D
-				break;
-				
-			default:
-				System.err.println("OnAnalyseFail() Tried analysing with an invalid oscillator!");
-				s = 50;
-				break;
-		}
-    	
-    	return s;
+
+        Collections.sort(buy);
+        String[] buyArray = new String[buy.size()];
+        for (int i = 0; i < buyArray.length; ++i) {
+            String uncut = buy.get(i);
+            buyArray[i] = uncut.substring(uncut.indexOf(" "), uncut.length());	// symbol is extracted from string here
+        }
+
+        Collections.sort(sell, Collections.reverseOrder());
+        String[] sellArray = new String[sell.size()];
+        for (int i = 0; i < sellArray.length; ++i) {
+            String uncut = sell.get(i);
+            sellArray[i] = uncut.substring(uncut.indexOf(" "), uncut.length());
+        }
+
+        System.out.println("OnAnalyseDone() Unlocking application and displaying results.");
+        listaCompra.setModel(new javax.swing.DefaultComboBoxModel<String>(buyArray));
+        listaVenda.setModel(new javax.swing.DefaultComboBoxModel<String>(sellArray));
+    }
+
+    private static double calculateSvalue(Map<String, Map<String, String>> oscillatorData,
+            String indicator,
+            Map<String, String> stockData) {
+        double s = 0;
+
+        switch (indicator) {
+            case AlphaVantageAPI.INDICATOR_OSC_BOLLINGER:
+                double last = Double.parseDouble(stockData.values().iterator().next());
+                double upper = Double.parseDouble(oscillatorData.values().iterator().next().get("Real Upper Band"));
+                double lower = Double.parseDouble(oscillatorData.values().iterator().next().get("Real Lower Band"));
+                s = 100 * (last - lower) / (upper - lower);	// %b
+                break;
+
+            case AlphaVantageAPI.INDICATOR_OSC_ULTIMATE:
+                s = Double.parseDouble(oscillatorData.values().iterator().next().get("ULTOSC"));	// %U
+                break;
+
+            case AlphaVantageAPI.INDICATOR_OSC_STOCHASTIC:
+                s = Double.parseDouble(oscillatorData.values().iterator().next().get("SlowD"));	// %D
+                break;
+
+            default:
+                System.err.println("OnAnalyseFail() Tried analysing with an invalid oscillator!");
+                s = 50;
+                break;
+        }
+
+        return s;
     }
 
 
@@ -216,5 +243,5 @@ public class AnalyzePanel extends javax.swing.JPanel {
     private javax.swing.JLabel venda;
     // End of variables declaration//GEN-END:variables
     private AlphaVantageAPI api;
-    
+    private Thread parallel;
 }

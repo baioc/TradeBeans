@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -276,7 +277,7 @@ public class TradeToday extends javax.swing.JFrame {
     }//GEN-LAST:event_menuButtonMouseExited
 
     private void menuButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuButtonMouseEntered
-        if(menuOpened){
+        if (menuOpened) {
             openMenu(evt);
         }
     }//GEN-LAST:event_menuButtonMouseEntered
@@ -287,12 +288,12 @@ public class TradeToday extends javax.swing.JFrame {
         updateSymbolsList();
     }//GEN-LAST:event_typeMenuActionPerformed
 
-    private void updateSymbolsList(){
+    private void updateSymbolsList() {
         jList1.setModel(new javax.swing.DefaultComboBoxModel<>(ListHandler.getSymbols()));
     }
 
     private void button1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button1MouseEntered
-       openMenu(evt);
+        openMenu(evt);
     }//GEN-LAST:event_button1MouseEntered
 
     private void button2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button2MouseEntered
@@ -304,7 +305,7 @@ public class TradeToday extends javax.swing.JFrame {
             cfgMenu = new ConfigMenu();
             cfgMenu.setVisible(true);
         }
-        if( !cfgMenu.isOpened()) {
+        if (!cfgMenu.isOpened()) {
             cfgMenu = new ConfigMenu();
             cfgMenu.setVisible(true);
         }
@@ -312,15 +313,31 @@ public class TradeToday extends javax.swing.JFrame {
     }//GEN-LAST:event_openConfigMenu
 
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
-    	if (evt.getValueIsAdjusting()) return;	// evita chamar duas vezes para um mesmo click
+        if (evt.getValueIsAdjusting()) {
+            return;	// evita chamar duas vezes para um mesmo click
+        }
         alertButton.setSelected(false);
+        parallel = new Thread() {
+            public void run() {
+                changeStock();
+                try {
+                    this.join();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(TradeToday.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        parallel.start();
+    }//GEN-LAST:event_jList1ValueChanged
+
+    private void changeStock() {
         String selectedValue = jList1.getSelectedValue();
-        
+
         if (selectedValue != null && !selectedValue.isEmpty()) {
-            Map<String,String> mapData = null;
-            final int TRY_LIMIT = 400;
+            Map<String, String> mapData = null;
+            final int TRY_LIMIT = 1;
             int c = 0;
-            
+
             System.out.print("Trying to reach data...");
             do {
                 if (ListHandler.getSelectedType().equals(ListHandler.TYPE_STOCK)) {
@@ -328,17 +345,23 @@ public class TradeToday extends javax.swing.JFrame {
                 } else {
                     mapData = ava.getCrypto(selectedValue, ConfigHandler.getConfig().getRefreshRate());
                 }
-                if (mapData != null) break;
+                if (mapData != null) {
+                    break;
+                }
 
                 System.out.print(".");
                 if (++c % 50 == 0) {
-                	System.out.println();
-                	if (c >= TRY_LIMIT) {
-                		System.out.printf("OnRequestTimeout() Gave up after trying %d times.\n", c);
-                		return;
-                	}
+                    System.out.println();
+                    if (c >= TRY_LIMIT) {
+                        System.out.printf("OnRequestTimeout() Gave up after trying %d times.\n", c);
+                        JOptionPane.showMessageDialog(null,
+                                "API can't retrieve data.",
+                                "Error!",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 }
-                
+
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {
@@ -346,20 +369,20 @@ public class TradeToday extends javax.swing.JFrame {
                     this.notify();
                 }
 
-            } while(mapData == null);
+            } while (mapData == null);
 
             System.out.println("Done!");
             String[][] data = convertMapToString(mapData);
             stockInfoPanel1.setVisible(false);
-            stockInfoPanel1.update(data, ListHandler.getNameOf(selectedValue),  ListHandler.getDescOf(selectedValue));
+            stockInfoPanel1.update(data, ListHandler.getNameOf(selectedValue), ListHandler.getDescOf(selectedValue));
             stockInfoPanel1.addChart(mapData);
             stockInfoPanel1.repaint();
             stockInfoPanel1.setVisible(true);
             stockInfoPanel1.setEnabled(true);
         }
-    }//GEN-LAST:event_jList1ValueChanged
+    }
 
-    private String[][] convertMapToString(Map<String,String> memoMap){
+    private String[][] convertMapToString(Map<String, String> memoMap) {
         String[][] arr = new String[memoMap.size()][2];
         Iterator<Entry<String, String>> entriesIterator = memoMap.entrySet().iterator();
 
@@ -386,7 +409,7 @@ public class TradeToday extends javax.swing.JFrame {
             analyzePanel1.setVisible(false);
             analyzePanel1.setEnabled(false);
             if (jList1.getSelectedIndex() >= 0) {
-               stockInfoPanel1.setVisible(true);
+                stockInfoPanel1.setVisible(true);
                 stockInfoPanel1.setEnabled(true);
             }
         }
@@ -407,7 +430,6 @@ public class TradeToday extends javax.swing.JFrame {
         menuPanel.setEnabled(false);
         menuOpened = false;
     }
-
 
     /**
      * @param args the command line arguments
@@ -471,6 +493,7 @@ public class TradeToday extends javax.swing.JFrame {
     //private String menuType = ConfigHandler.getConfig().getMenuType();
     private ConfigMenu cfgMenu = null;
     private AlphaVantageAPI ava = null;
+    private Thread parallel;
     //Custom Manual Methods
     //private void changeType()
 }

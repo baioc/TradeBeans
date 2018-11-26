@@ -22,9 +22,9 @@ public class AlphaVantageAPI extends API {
 	public static final String TIME_DAILY = "Daily";
 	public static final String TIME_WEEKLY = "Weekly";
 	public static final String TIME_MONTHLY = "Monthly";
-	public static final String INDICATOR_OSC_BOLLINGER = "Bollinger Bands";
-	public static final String INDICATOR_OSC_ULTIMATE = "Ultimate Oscillator";
-	public static final String INDICATOR_OSC_STOCHASTIC = "Stochastic Oscillator";
+	public static final String INDICATOR_OSC_BOLLINGER = "BBANDS";
+	public static final String INDICATOR_OSC_ULTIMATE = "ULTOSC";
+	public static final String INDICATOR_OSC_STOCHASTIC = "STOCH";
 	public static final String SIZE_FULL = "full";
 	public static final String SIZE_COMPACT = "compact";
 
@@ -179,27 +179,9 @@ public class AlphaVantageAPI extends API {
 		BufferedReader file = null;
 		String json = null;
 		
-		String actualIndicator = null;
-		switch (indicator) {
-			case INDICATOR_OSC_BOLLINGER:
-				actualIndicator = "BBANDS";
-				break;
-				
-			case INDICATOR_OSC_ULTIMATE:
-				actualIndicator = "ULTOSC";
-				break;
-				
-			case INDICATOR_OSC_STOCHASTIC:
-				actualIndicator = "STOCH";
-				break;
-				
-			default:
-				return null;
-		}
-		
 		try {
 			file = super.get(
-				"function=", actualIndicator,
+				"function=", indicator.toUpperCase(),
 				"&symbol=", symbol.toUpperCase(),
 				"&interval=", timeUnit.toLowerCase(),
 				"&time_period=", Integer.toString(period),
