@@ -120,21 +120,7 @@ public class AnalyzePanel extends javax.swing.JPanel {
 		
 		if (ListHandler.getSelectedType() != ListHandler.TYPE_STOCK) ListHandler.changeSelectedType();	// no api oscillator data for cryptocurrencies
 		final String[] symbols = ListHandler.getSymbols();
-    	
-    	final String oscillator = ConfigHandler.getConfig().getRankingAlgorithm();
-    	String upperKey = null, lowerKey = null;
-    	switch (oscillator) {
-    		case AlphaVantageAPI.INDICATOR_OSC_BOLLINGER:
-    			upperKey = "Real Upper Band";
-    			lowerKey = "Real Lower Band";
-    			break;
-    		
-    		// TODO other oscillators
-    			
-    		default:
-    			System.err.println("OnAnalyseFail() Tried analysing with an invalid oscillator!");;
-    			return;
-    	}
+		final String indicator = ConfigHandler.getConfig().getRankingAlgorithm();
     	
     	List<String> buy = new ArrayList<>(symbols.length);
     	List<String> sell = new ArrayList<>(symbols.length);
@@ -143,36 +129,33 @@ public class AnalyzePanel extends javax.swing.JPanel {
     	symbols: for (String symbol : symbols) {
         	Map<String, String> stock = null;
         	n = 0;
-            while ((stock = api.getStock(symbol, AlphaVantageAPI.TIME_DAILY)) == null) {
+            while ((stock = api.getStock(symbol, ConfigHandler.getConfig().getRefreshRate())) == null) {
             	if (++n >= TRY_LIMIT) {
-            		System.out.printf("\tOnRawRequestTimeout() Gave up after trying %d times.\n", n);
+            		System.out.printf("\tOnRawRequestTimeout() Gave up on %s after trying %d times.\n", symbol, n);
             		continue symbols;
             	}
             };
             
-            Map<String, Map<String, String>> bbands = null;
+            Map<String, Map<String, String>> osc = null;
             n = 0;
-			while ((bbands = api.getIndicator(symbol, AlphaVantageAPI.TIME_DAILY, oscillator)) == null) {
+			while ((osc = api.getIndicator(symbol, ConfigHandler.getConfig().getRefreshRate(), indicator)) == null) {
 				if (++n >= TRY_LIMIT) {
-            		System.out.printf("\tOnIndicatorRequestTimeout() Gave up after trying %d times.\n", n);
+            		System.out.printf("\tOnIndicatorRequestTimeout() Gave up on %s after trying %d times.\n", symbol, n);
             		continue symbols;
             	}
 			};
 			
-			double last =	Double.parseDouble( stock.values().iterator().next() );
-			double upper =	Double.parseDouble( bbands.values().iterator().next().get(upperKey) );
-			double lower =	Double.parseDouble( bbands.values().iterator().next().get(lowerKey) );
+			double s_value = calculateSvalue(osc, indicator, stock);
+			System.out.printf("\tOnResponseReceived() %s s_value of %f\n", symbol, s_value);
 			
-			double sbv = ((last - lower) / (upper - lower)) - 0.5;
-			System.out.printf("\tOnResponseReceived() %s shifted_b_value of %f\n", symbol, sbv);
-			if (sbv <= -0.34) {
-				buy.add(Double.toString(sbv) + " " + symbol);	// @note value concatenated to symbol for sorting
-			} else if (sbv >= 0.34) {
-				sell.add(Double.toString(sbv) + " " + symbol);
+			if (s_value <= 25) {
+				buy.add(Double.toString(s_value) + " " + symbol);	// @note value concatenated to symbol for sorting
+			} else if (s_value >= 75) {
+				sell.add(Double.toString(s_value) + " " + symbol);
 			}
         }
     	
-    	Collections.sort(buy, Collections.reverseOrder());
+    	Collections.sort(buy);
     	String[] buyArray = new String[buy.size()];
     	for (int i = 0; i < buyArray.length; ++i) {
     		String uncut = buy.get(i);
@@ -187,10 +170,40 @@ public class AnalyzePanel extends javax.swing.JPanel {
     	}
     	
     	System.out.println("OnAnalyseDone() Unlocking application and displaying results.");
-
         listaCompra.setModel( new javax.swing.DefaultComboBoxModel<String>(buyArray) );
         listaVenda.setModel( new javax.swing.DefaultComboBoxModel<String>(sellArray) );
     }//GEN-LAST:event_jButton1ActionPerformed
+    
+    
+    private static double calculateSvalue(	Map<String, Map<String, String>> oscillatorData,
+    										String indicator,
+    										Map<String, String> stockData	) {
+    	double s = 0;
+    	
+    	switch (indicator) {
+			case AlphaVantageAPI.INDICATOR_OSC_BOLLINGER:
+				double last =	Double.parseDouble( stockData.values().iterator().next() );
+				double upper =	Double.parseDouble( oscillatorData.values().iterator().next().get("Real Upper Band") );
+				double lower =	Double.parseDouble( oscillatorData.values().iterator().next().get("Real Lower Band") );
+				s = 100 * (last - lower) / (upper - lower);	// %b
+				break;
+			
+			case AlphaVantageAPI.INDICATOR_OSC_ULTIMATE:
+				s = Double.parseDouble( oscillatorData.values().iterator().next().get("ULTOSC") );	// %U
+				break;
+				
+			case AlphaVantageAPI.INDICATOR_OSC_STOCHASTIC:
+				s = Double.parseDouble( oscillatorData.values().iterator().next().get("SlowD") );	// %D
+				break;
+				
+			default:
+				System.err.println("OnAnalyseFail() Tried analysing with an invalid oscillator!");
+				s = 50;
+				break;
+		}
+    	
+    	return s;
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

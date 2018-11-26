@@ -66,7 +66,8 @@ public class Config {
     public static String[] getRankingAlgorithms() {
         String[] r = {
         	AlphaVantageAPI.INDICATOR_OSC_BOLLINGER,
-        	// TODO other oscillators
+        	AlphaVantageAPI.INDICATOR_OSC_ULTIMATE,
+        	AlphaVantageAPI.INDICATOR_OSC_STOCHASTIC,
         };
         return r;
     }

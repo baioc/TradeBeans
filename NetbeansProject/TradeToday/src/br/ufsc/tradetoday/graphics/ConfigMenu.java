@@ -39,7 +39,7 @@ public class ConfigMenu extends javax.swing.JFrame {
         refreshRate = new javax.swing.JLabel();
         rankingAlgorithm = new javax.swing.JLabel();
         customKey = new javax.swing.JLabel();
-        rrComBox = new javax.swing.JComboBox<>(Config.getRefreshTimes());
+        rrComBox = new javax.swing.JComboBox<>();
         raComBox = new javax.swing.JComboBox<>();
         ckTextField = new javax.swing.JFormattedTextField();
         applyBtn = new javax.swing.JButton();
