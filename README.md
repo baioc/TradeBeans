@@ -1,4 +1,4 @@
-POO2_Project
+TradeBeans
 ====
 
 ## Sistema de Simulação de Compra e Venda de Ativos Financeiros Automatizada
